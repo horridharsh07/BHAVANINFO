@@ -1,0 +1,6 @@
+{
+  "provider": "fast2sms",
+  "fast2sms_api_key": "OQ0dtRGb9qMVLzyezN4oBB7bQRPkroFnLNxjYfsgoOpfGpsbz4hijRhxO3p9",
+  "route": "otp",
+  "comment": "Live Fast2SMS Gateway API Key configured (Wallet: ₹50.00 / 200 SMS active)"
+}

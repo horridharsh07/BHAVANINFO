@@ -1,0 +1,14 @@
+{
+  "last_release": "2026-08-19.0",
+  "last_run": "2026-09-10T15:22:04.437113+00:00",
+  "theme": "buildings",
+  "type": "building",
+  "bbox": {
+    "xmin": 75.82,
+    "ymin": 30.88,
+    "xmax": 75.87,
+    "ymax": 30.93
+  },
+  "backend": "geojson",
+  "output": "D:\\BHAVANINFO\\punjab_ludhiana_buildings.geojson"
+}

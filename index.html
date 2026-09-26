@@ -1,0 +1,2501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Official Government of India BHAVANINFO 3D Cadastral Digital Twin Portal for land parcel registration, autonomous drone surveys, and 3D level-by-level Sub-ULPIN management.">
+  <title>BHAVANINFO • bhanav.govt • 3D Cadastral Digital Twin Portal</title>
+  
+  <!-- Tab Favicon / Logo -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%2300274d' stroke='%23ffd700' stroke-width='3'/%3E%3Cpath d='M50 15 L80 38 L80 82 L20 82 L20 38 Z' fill='none' stroke='%23ffd700' stroke-width='4'/%3E%3Crect x='36' y='52' width='28' height='30' fill='%230284c7' stroke='%23ffd700' stroke-width='2'/%3E%3Cpath d='M50 24 L50 48 M35 36 L65 36' stroke='%2300f2fe' stroke-width='3'/%3E%3Ccircle cx='50' cy='67' r='3' fill='%23ffd700'/%3E%3C/svg%3E">
+  
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- MapLibre GL 3D City Engine CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@3.6.1/dist/maplibre-gl.css" />
+  
+  <!-- Government Theme CSS -->
+  <link rel="stylesheet" href="src/styles/gov-theme.css?v=v20260911_v26_multipage_pdf_print_fixed">
+</head>
+<body>
+
+  <!-- National Tricolor Header Ribbon -->
+  <div class="gov-tricolor-bar"></div>
+
+  <!-- COLLAPSIBLE TOP GOVERNMENT HEADER WRAPPER -->
+  <div id="collapsible-header" class="collapsible-header-wrapper">
+    <!-- Government Accessibility Bar -->
+    <header class="gov-top-bar">
+      <div>
+        <span>भारत सरकार &bull; Government of India</span>
+        <span style="margin: 0 8px; opacity: 0.4;">|</span>
+        <span>Ministry of Rural Development &amp; Panchayati Raj</span>
+      </div>
+      <div class="accessibility-controls">
+        <button id="btn-font-minus" title="Decrease font size">A-</button>
+        <button id="btn-font-reset" title="Normal font size">A</button>
+        <button id="btn-font-plus" title="Increase font size">A+</button>
+        <span style="opacity: 0.3;">|</span>
+        <button id="btn-high-contrast" title="Toggle high contrast mode">High Contrast</button>
+        <span style="opacity: 0.3;">|</span>
+        <label for="lang-selector" style="font-size: 0.72rem;">Language:</label>
+        <select id="lang-selector" class="lang-badge" style="background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; padding: 2px 6px; border-radius: 4px; font-size: 0.72rem; font-weight: 500;">
+          <option value="en">English</option>
+          <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+          <option value="hi">हिन्दी (Hindi)</option>
+        </select>
+        <span style="opacity: 0.3;">|</span>
+        <div id="top-jurisdiction-indicator" style="font-size: 0.72rem; background: #ffffff; color: #0f172a; padding: 2px 8px; border-radius: 4px; border: 1px solid #cbd5e1; display: flex; align-items: center; gap: 4px; font-weight: 600;">
+          <span>📍</span> <strong id="top-jurisdiction-text">Punjab • Amritsar (Amritsar-I)</strong>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Government Brand Header (Compact & Streamlined) -->
+    <div class="gov-header">
+      <div class="gov-brand">
+        <!-- Embedded National Emblem of India Silhouette -->
+        <svg class="emblem-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="48" fill="#FFFFFF" fill-opacity="0.12" stroke="#FFD992" stroke-width="1.5"/>
+          <path d="M50 14 C43 14 38 20 38 28 C38 34 42 39 46 41 L46 58 C44 58 40 59 36 61 L36 74 C36 76 38 78 40 78 L60 78 C62 78 64 76 64 74 L64 61 C60 59 56 58 54 58 L54 41 C58 39 62 34 62 28 C62 20 57 14 50 14 Z" fill="#FFD992"/>
+          <circle cx="50" cy="68" r="4" fill="#0B4F8A" stroke="#FFD992" stroke-width="1"/>
+          <rect x="32" y="80" width="36" height="4" rx="2" fill="#FFFFFF"/>
+          <text x="50" y="93" fill="#FFD992" font-size="7" font-weight="bold" text-anchor="middle" letter-spacing="1">सत्यमेव जयते</text>
+        </svg>
+        <div class="gov-titles">
+          <h1 id="portal-title-text">
+            BHAVANINFO
+            <span class="header-domain-pill">bhanav.govt</span>
+          </h1>
+          <span id="portal-sub-text" style="display: none;"></span>
+          <span id="portal-jurisdiction-text" style="display: none;"></span>
+        </div>
+      </div>
+      <div class="gov-badges">
+        <div class="digital-india-badge">
+          <strong>Digital India</strong>
+          <span>Land Modernization</span>
+        </div>
+        <div class="digital-india-badge" style="border-color: #ffd992;">
+          <strong style="color: #b45309;">Bhu-Aadhaar</strong>
+          <span>14-Digit ULPIN</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPACT TOP BAR: Auto-appears 5s after login when full header auto-hides, displaying only BHAVANINFO & bhanav.govt -->
+  <div id="compact-name-bar" class="compact-name-bar" style="display: none;">
+    <div class="compact-name-left">
+      <span class="compact-emblem">🏛️</span>
+      <span class="compact-brand-title">BHAVANINFO</span>
+      <span class="compact-domain-badge">bhanav.govt</span>
+      
+    </div>
+    <div class="compact-name-right">
+      <span class="compact-stat-pill">✅ 2,160 / 3,600 Twins Verified (60%)</span>
+      <button id="btn-expand-header-subtle" class="btn-subtle-expand" title="Expand Full Government Header">▼ Details</button>
+    </div>
+  </div>
+
+  <!-- Main Navigation Bar -->
+  
+  <!-- Public Navigation moved to Landing Page Side Panel as requested -->
+
+  <!-- Unified Sleek Government Navigation & Brand Bar (Active after Login) -->
+  <nav class="gov-nav" style="display: none;">
+    <div class="gov-nav-brand" onclick="window.app && window.app.switchView('dashboard')" title="BHAVANINFO • Cadastre Home">
+      <span class="gov-nav-emblem">🏛️</span>
+      <div class="gov-nav-brand-text">
+        <span class="gov-nav-title">BHAVANINFO</span>
+        <span class="header-domain-pill">bhanav.govt</span>
+      </div>
+    </div>
+
+    <ul class="nav-links">
+      <li class="nav-item active" data-view="dashboard" id="tour-nav-dashboard">
+        <span class="nav-icon">🏛️</span>
+        <span class="nav-label">My Portfolio</span>
+      </li>
+      <li class="nav-item" data-view="map" id="tour-nav-map">
+        <span class="nav-icon">🌆</span>
+        <span class="nav-label">3D City Map</span>
+      </li>
+      <li class="nav-item" data-view="twin" id="tour-nav-twin">
+        <span class="nav-icon">🏢</span>
+        <span class="nav-label">3D Twin</span>
+      </li>
+      <li class="nav-item" data-view="report" id="tour-nav-report">
+        <span class="nav-icon">📊</span>
+        <span class="nav-label">District Report</span>
+      </li>
+    </ul>
+    
+    <!-- UNIVERSAL CADASTRAL & GEOGRAPHIC SEARCH BAR -->
+    <div class="nav-search-box" id="tour-nav-search">
+      <span class="search-ico">🔍</span>
+      <input type="text" id="global-cadastre-search" 
+             placeholder="Search ULPIN, City, Owner..." 
+             autocomplete="off">
+      <span class="search-kbd-hint">Ctrl K</span>
+      <button type="button" id="btn-clear-search" class="search-clear-btn" style="display: none;">&times;</button>
+      <div id="search-autocomplete-dropdown" class="search-dropdown-menu" style="display: none;"></div>
+    </div>
+
+    <div class="gov-nav-right">
+      <!-- 5-STEP INTERACTIVE TUTORIAL & GUIDE TRIGGER BUTTON -->
+      <button type="button" id="btn-open-tutorial" class="btn-tutorial-trigger" onclick="window.app && window.app.openTutorialMenu()" title="Open 5-Step Interactive Guide &amp; Navigation Tips">
+        <span class="tutorial-star">✨</span>
+        <span class="tutorial-btn-text">Tips &amp; Tour</span>
+      </button>
+
+      <div id="user-profile-pill" class="user-status-pill" style="display: flex;">
+        <span class="status-dot"></span>
+        <span id="user-pill-name">Harpreet Singh</span>
+        <span class="user-ekyc-tag">Verified</span>
+      </div>
+      <button id="btn-logout" class="btn-logout-pill" onclick="window.app.logoutUser()">Sign Out</button>
+    </div>
+  </nav>
+
+  <!-- CADASTRAL MAP CONTROLS HEADER RIBBON (Ultra-thin single row, sits cleanly BELOW gov-nav in map view) -->
+  <div id="map-sub-header-bar" class="map-sub-header-bar" style="display: none;">
+    <div class="header-ribbon-left">
+      <div class="ribbon-filter-group" id="tour-step-filters">
+        <span class="ribbon-label">🎯 Filter:</span>
+        <select id="select-building-filter" class="ribbon-select" onchange="window.app.applyMapFilter(this.value)">
+          <option value="all" selected>🌐 All Cities &amp; Buildings (10,300 Properties)</option>
+          <option value="digitalized">✅ Digitalized 3D Twins</option>
+          <option value="anomalies">🚨 AI Height Violations (Flagged Notice)</option>
+          <option value="pending">⏳ Pending Drone SLAM Survey</option>
+          <option value="highrise">🏢 Multi-Storey (3+ Storeys)</option>
+          <option value="single_floor">🏠 Single Storey</option>
+          <option value="tax_paid">💰 Property Tax Paid</option>
+        </select>
+        <div class="ribbon-chips">
+          <button type="button" class="btn-quick-filter active" data-filter="all" onclick="window.app.applyMapFilter('all')">All</button>
+          <button type="button" class="btn-quick-filter" data-filter="digitalized" onclick="window.app.applyMapFilter('digitalized')">✅ Twins</button>
+          <button type="button" class="btn-quick-filter" data-filter="anomalies" onclick="window.app.applyMapFilter('anomalies')">🚨 Violations</button>
+          <button type="button" class="btn-quick-filter" data-filter="pending" onclick="window.app.applyMapFilter('pending')">⏳ Pending</button>
+        </div>
+      </div>
+
+      <div class="ribbon-v-divider"></div>
+
+      <div class="ribbon-city-quicklinks" id="tour-step-flyto">
+        <span class="ribbon-label">📍 Fly To:</span>
+        <button type="button" class="btn-city-chip" onclick="window.app.flyToCity('amritsar')">Amritsar</button>
+        <button type="button" class="btn-city-chip" onclick="window.app.flyToCity('ludhiana')">Ludhiana (3,000+)</button>
+        <button type="button" class="btn-city-chip" onclick="window.app.flyToCity('phagwara')">Phagwara (1,200+)</button>
+        <button type="button" class="btn-city-chip" onclick="window.app.flyToCity('jalandhar')">Jalandhar (2,500+)</button>
+        <button type="button" class="btn-city-chip" onclick="window.app.flyToCity('patiala')">Patiala</button>
+        <button type="button" class="btn-city-chip" onclick="window.app.flyToCity('mohali')">Mohali</button>
+      </div>
+    </div>
+
+    <div class="header-ribbon-right" id="tour-step-actions">
+      <div class="map-layer-switcher">
+        <button id="btn-layer-satellite" class="layer-switch-btn active" onclick="window.app.setMapLayer('satellite')">🛰️ 3D Satellite</button>
+        <button id="btn-layer-street" class="layer-switch-btn" onclick="window.app.setMapLayer('street')">🗺️ Street Map</button>
+      </div>
+      <button id="btn-add-building-map" class="btn-ribbon-add" onclick="window.app.openRegisterModal()">
+        <span>➕ Add / Survey Building</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Top Government Notification Bar (Statutory Discrepancy Alerts, Sec 187 Notices & Drone Telemetry) -->
+  <div id="top-gov-notification-bar" class="gov-top-notification" style="display: flex;">
+    <div class="notif-content">
+      <span class="notif-icon" aria-label="Statutory Alert Icon">🚨</span>
+      <div class="notif-text">
+        <strong id="notif-title">2026 (🚨 Present Day): Autonomous LiDAR SLAM 3R drone survey detected statutory discrepancy</strong>
+        <span id="notif-body">Declared G+1; Autonomous 3D LiDAR SLAM detected unauthorized Level 3 extension (+3.2m height excess). Statutory 24h notice active under Sec 187 Punjab Municipal Act.</span>
+      </div>
+    </div>
+    <div class="notif-right-actions">
+      <span class="notif-timer-pill" title="Statutory Section 187 Notice Compliance Deadline">
+        ⏳ <span class="timer-countdown" id="notif-card-timer">14h 22m 35s</span> remaining
+      </span>
+      <button type="button" id="btn-notif-inspect" class="btn-notif-inspect" onclick="window.app && window.app.inspectDiscrepancyTwin()" title="Inspect 3D Digital Twin Drone Telemetry">
+        <span>🏢 Inspect 3D Twin &rarr;</span>
+      </button>
+      <button type="button" id="btn-close-notif" class="notif-close-btn" onclick="document.getElementById('top-gov-notification-bar').style.display='none'" title="Dismiss Alert">&times;</button>
+    </div>
+  </div>
+
+  <!-- Cadastre & Land Mutation History Timeline Slider Bar (Dynamically Adapted per Building) -->
+  <div id="cadastre-history-bar" class="history-timeline-bar" style="display: none;">
+    <div class="history-header">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="color: #0f172a; font-weight: 700; font-size: 0.78rem;">⏳ BUILDING MUTATION TIMELINE:</span>
+        <span id="history-building-tag" style="font-family: monospace; font-size: 0.75rem; background: #f0f9ff; color: #0284c7; padding: 2px 8px; border-radius: 4px; border: 1px solid #bae6fd; font-weight: 700;">BCN501B1NA2CH0</span>
+        <span id="history-owner-tag" style="font-size: 0.72rem; color: #475569; font-weight: 600;">Sardar Harpreet Singh</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span id="history-meter-tag" style="font-size: 0.7rem; background: #fefce8; color: #854d0e; padding: 2px 8px; border-radius: 4px; border: 1px solid #fef08a; font-weight: 600;">⚡ Meter: PSPCL-LT-8821</span>
+        <span id="history-active-badge" class="history-badge">2026 (PRESENT DAY) &bull; DRONE SURVEY</span>
+      </div>
+    </div>
+    <div class="history-slider-container">
+      <input type="range" id="history-year-slider" min="2016" max="2026" step="1" value="2026" class="history-slider">
+      <div id="history-milestones-container" class="history-milestones">
+        <!-- Dynamically generated for each specific building! -->
+      </div>
+    </div>
+    <div id="history-event-desc" class="history-event-desc">
+      <!-- Dynamically generated for each specific building! -->
+    </div>
+  </div>
+
+  <!-- Viewport Area -->
+  <main class="app-viewport">
+
+    <!-- VIEW 0: OFFICIAL DEPARTMENT PUBLIC LANDING PAGE (DEFAULT INITIAL VIEW) -->
+    <section id="view-landing" class="view-panel active">
+      <div class="landing-page-container">
+        
+        <!-- LEFT SIDE PANEL (LANDING NAVIGATION, SECURITY & SIGN IN) -->
+        <!-- 3-BAR TOGGLE BUTTON (Visible at top-left when Side Panel is collapsed) -->
+        <button type="button" id="btn-toggle-side-panel" class="btn-toggle-side-panel" onclick="window.app && window.app.toggleSidePanel()" title="Toggle Navigation Panel (☰)" aria-label="Toggle Navigation Panel">
+          <span class="bar-icon">☰</span>
+        </button>
+
+        <!-- LEFT SIDE PANEL (LANDING NAVIGATION, SECURITY & SIGN IN) -->
+        <aside id="landing-side-panel" class="landing-side-panel">
+          <div class="side-panel-header">
+            <!-- 3-bar button placed prominently on top-left -->
+            <button type="button" class="btn-side-collapse" onclick="window.app && window.app.toggleSidePanel()" title="Hide Side Panel (☰)" aria-label="Hide Side Panel">
+              <span>☰</span>
+            </button>
+            <div class="side-brand-badge" style="flex: 1;">
+              <span class="side-emblem">🏛️</span>
+              <span class="side-title">BHAVANINFO</span>
+              <span class="side-domain">bhanav.govt</span>
+            </div>
+          </div>
+          <div class="side-brand-sub">Cadastre &amp; Digital Twin Portal</div>
+
+          <!-- Side Navigation Menu -->
+          <nav class="side-panel-menu">
+            <a href="#section-about" class="side-menu-item active" onclick="event.preventDefault(); window.app && window.app.scrollToLandingSection('section-about')">
+              <span class="side-menu-icon">🏛️</span>
+              <span>About Department</span>
+            </a>
+            <a href="#section-rules" class="side-menu-item" onclick="event.preventDefault(); window.app && window.app.scrollToLandingSection('section-rules')">
+              <span class="side-menu-icon">⚖️</span>
+              <span>Rules &amp; Regulations</span>
+            </a>
+            <a href="#section-security" class="side-menu-item" onclick="event.preventDefault(); window.app && window.app.scrollToLandingSection('section-security')">
+              <span class="side-menu-icon">🔒</span>
+              <span>Security &amp; SHA-256</span>
+            </a>
+            <a href="#section-telemetry" class="side-menu-item" onclick="event.preventDefault(); window.app && window.app.scrollToLandingSection('section-telemetry')">
+              <span class="side-menu-icon">🛸</span>
+              <span>Drone SLAM Telemetry</span>
+            </a>
+            <a href="#section-charter" class="side-menu-item" onclick="event.preventDefault(); window.app && window.app.scrollToLandingSection('section-charter')">
+              <span class="side-menu-icon">📜</span>
+              <span>Citizen Charter &amp; RTI</span>
+            </a>
+            <a href="#ai-assistant" id="side-menu-ai-btn" class="side-menu-item" onclick="event.preventDefault(); window.app && window.app.openAiAssistant()" style="border-left: 3px solid #0284c7; background: rgba(2, 132, 199, 0.08);">
+              <span class="side-menu-icon">🤖</span>
+              <span>AI Cadastre Assistant</span>
+              <span style="background: #0284c7; color: #fff; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 8px; margin-left: auto;">24/7 RAG</span>
+            </a>
+          </nav>
+
+          <!-- Security Status Pill Card -->
+          <div class="side-panel-security-card">
+            <div class="side-sec-badge">
+              <span class="side-sec-icon">🛡️</span>
+              <div class="side-sec-details">
+                <strong>WAF Shield Active</strong>
+                <span>SHA-256 Verified &bull; ISO 19152</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Auth Entry Actions -->
+          <div class="side-panel-auth">
+            <button type="button" id="btn-side-signin" class="btn-side-signin" onclick="window.app && window.app.openLoginModal()">
+              <span class="btn-signin-key">🔑</span>
+              <div class="btn-signin-text">
+                <strong>Citizen / Officer Sign In</strong>
+                <span>Aadhaar OTP / JanParichay / DSC</span>
+              </div>
+            </button>
+
+            
+          </div>
+        </aside>
+
+        <!-- RIGHT MAIN CONTENT AREA -->
+        <div id="landing-main-scroll" class="landing-main-content">
+          <div class="landing-page-wrapper">
+        
+        <!-- HERO BANNER -->
+        <header class="landing-hero">
+          <div class="hero-content">
+            <div class="hero-dept-badges">
+              <span class="hero-badge-gov">🏛️ भारत सरकार &bull; Government of India</span>
+              <span class="hero-badge-dept">Department of Land Resources &amp; Revenue Records (Punjab)</span>
+              <span class="hero-badge-mission">DILRMP &bull; SVAMITVA 2.0 &bull; ISO 19152 (3D LADM)</span>
+            </div>
+            <h1 class="hero-title">National 3D Cadastral Digital Twin &amp; Bhu-Aadhaar Portal</h1>
+            <p class="hero-subtitle">
+              Pioneering next-generation land governance with autonomous 3R LiDAR SLAM drone surveys, 
+              3D volumetric Sub-ULPIN multi-level spatial property rights, and automated municipal compliance 
+              under Section 187 of the Punjab Municipal Act.
+            </p>
+            
+            <div class="hero-actions">
+              <button type="button" class="btn-hero-primary" onclick="window.app.openLoginModal()">
+                <span>🔑</span> Citizen / Officer Sign In (Aadhaar / NSSO)
+              </button>
+              <a href="#section-rules" class="btn-hero-secondary">
+                <span>📜</span> Department Rules &amp; Regulations
+              </a>
+              <a href="#section-security" class="btn-hero-outline">
+                <span>🛡️</span> Security &amp; SHA-256 Ledger
+              </a>
+            </div>
+
+            <!-- National Live Telemetry Stats Bar -->
+            <div class="landing-metrics-grid">
+              <div class="metric-card">
+                <span class="metric-num">3,600+</span>
+                <span class="metric-lbl">Cadastral Parcels Mapped</span>
+                <span class="metric-sub">Amritsar Pilot Division</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-num">60%</span>
+                <span class="metric-lbl">3D Digital Twins Verified</span>
+                <span class="metric-sub">2,160 Level-Accredited Units</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-num">100%</span>
+                <span class="metric-lbl">SHA-256 Immutability</span>
+                <span class="metric-sub">Cryptographic Hash Sealed</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-num">14</span>
+                <span class="metric-lbl">Active 24h Notices</span>
+                <span class="metric-sub">Sec 187 Autonomous Audit</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-num">2 In-Flight</span>
+                <span class="metric-lbl">LiDAR SLAM Drones</span>
+                <span class="metric-sub">Autonomous Survey Fleet</span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- SECTION 1: ABOUT DEPARTMENT & 3D CADASTRAL MANDATE -->
+        <section id="section-about" class="landing-section">
+          <div class="section-container">
+            <div class="section-header-block">
+              <span class="section-tag">MISSION &amp; INSTITUTIONAL FRAMEWORK</span>
+              <h2 class="section-main-title">Modernizing Indian Land Administration with 3D Spatial Cadastre</h2>
+              <p class="section-sub-text">
+                The Department of Land Resources (DoLR), in collaboration with the Government of Punjab, 
+                has instituted BHAVANINFO to eliminate boundary disputes, illegal multi-storey encroachments, 
+                and subterranean utility hazards through state-of-the-art 3D digital twining.
+              </p>
+            </div>
+
+            <div class="about-pillars-grid">
+              <div class="pillar-card">
+                <div class="pillar-icon">🛰️</div>
+                <h3>DILRMP &amp; SVAMITVA 2.0</h3>
+                <p>
+                  Transitioning conventional 2D revenue records (Jamabandi &amp; Khasra maps) into legally accredited 
+                  3D spatial polygons, giving definitive ownership certificates (Bhu-Aadhaar) to citizens.
+                </p>
+                <div class="pillar-chip">National Land Modernization</div>
+              </div>
+
+              <div class="pillar-card">
+                <div class="pillar-icon">🏢</div>
+                <h3>ISO 19152 (3D LADM) Standard</h3>
+                <p>
+                  Global cadastral standard enabling distinct vertical Sub-ULPIN registrations for ground lobbies, 
+                  residential apartment floors, commercial basements, and rooftop solar installations.
+                </p>
+                <div class="pillar-chip">ISO 19152 Compliant</div>
+              </div>
+
+              <div class="pillar-card">
+                <div class="pillar-icon">🤖</div>
+                <h3>Autonomous LiDAR SLAM 3R</h3>
+                <p>
+                  High-precision RTK autonomous drones scan city blocks with $le 2.5\text{ cm}$ vertical accuracy, 
+                  instantly cross-referencing physical structures against municipal sanctioned blueprints.
+                </p>
+                <div class="pillar-chip">Survey of India Certified</div>
+              </div>
+
+              <div class="pillar-card">
+                <div class="pillar-icon">⚡</div>
+                <h3>-30ft Subterranean Utility Protection</h3>
+                <p>
+                  3D ground-penetrating radar (GPR) reveals deep foundation bored piles, city gas mains, high-voltage 
+                  feeder cables, and sanitary trunk lines to avert catastrophic construction strikes.
+                </p>
+                <div class="pillar-chip">Safe Digging Right-of-Way</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 2: STATUTORY RULES, REGULATIONS & ENFORCEMENT BYE-LAWS -->
+        <section id="section-rules" class="landing-section bg-alt">
+          <div class="section-container">
+            <div class="section-header-block">
+              <span class="section-tag">LEGAL &amp; STATUTORY REPOSITORY</span>
+              <h2 class="section-main-title">Department Rules, Regulations &amp; Statutory Directives</h2>
+              <p class="section-sub-text">
+                All cadastral registrations, building mutations, and drone audits in the State of Punjab 
+                are strictly governed by the following statutory bye-laws and regulations.
+              </p>
+            </div>
+
+            <div class="rules-grid">
+              
+              <!-- RULE 1 -->
+              <article class="rule-card">
+                <div class="rule-badge rule-danger">STATUTORY ENFORCEMENT</div>
+                <h3 class="rule-title">Section 187, Punjab Municipal Act (1911 &amp; 2026 AI Amendments)</h3>
+                <div class="rule-meta">Notification Ref: PB-MCA-SEC187-2026-REV &bull; Statutory Authority: ADC (Revenue)</div>
+                <div class="rule-body">
+                  <p>
+                    <strong>3D Vertical Height &amp; FAR Compliance:</strong> Any structural addition beyond the sanctioned 
+                    number of storeys or approved Floor Area Ratio (FAR) detected via autonomous LiDAR drone SLAM survey 
+                    triggers an automated <strong>Statutory 24-Hour Notice</strong>.
+                  </p>
+                  <ul class="rule-bullets">
+                    <li>The owner must submit a regularisation petition or explain the discrepancy within 48 hours.</li>
+                    <li>Failure to report results in automatic cancellation of provisional registration and municipal demolition notice under Sec 187.</li>
+                    <li>Challan fees deposited via Bharatkosh are forfeited as municipal statutory penalty.</li>
+                  </ul>
+                </div>
+              </article>
+
+              <!-- RULE 2 -->
+              <article class="rule-card">
+                <div class="rule-badge rule-primary">CADASTRAL NUMBERING</div>
+                <h3 class="rule-title">Bhu-Aadhaar 14-Digit ULPIN &amp; 3D Sub-ULPIN Standard Operating Procedure</h3>
+                <div class="rule-meta">Ministry of Rural Development Directive &bull; Standard: DoLR-SOP-2024-ULPIN</div>
+                <div class="rule-body">
+                  <p>
+                    <strong>Unique Land Parcel Identification Number (ULPIN):</strong> Every parcel is assigned a geo-referenced 
+                    14-digit alphanumeric Bhu-Aadhaar code derived from longitude and latitude centroids.
+                  </p>
+                  <ul class="rule-bullets">
+                    <li><strong>Vertical Levels (Sub-ULPIN):</strong> Multi-storey structures assign sub-units (e.g. <code>BCN501B1NA2CH0-G00</code> for Ground Floor, <code>F01</code> for Floor 1).</li>
+                    <li><strong>Foundation Tier:</strong> Subterranean layers receive dedicated Sub-ULPIN codes (e.g. <code>B30-UTL</code>) to demarcate public right-of-way.</li>
+                    <li>No property transaction or bank mortgage can be registered without verified 14-digit ULPIN accreditation.</li>
+                  </ul>
+                </div>
+              </article>
+
+              <!-- RULE 3 -->
+              <article class="rule-card">
+                <div class="rule-badge rule-info">DRONE OPERATIONS</div>
+                <h3 class="rule-title">DGCA Green-Zone Autonomous Cadastral LiDAR SLAM Guidelines</h3>
+                <div class="rule-meta">DGCA Drone Rules 2021/2026 &bull; Precision Tier: 3R Cadastral ($le 2.5	ext{ cm}$)</div>
+                <div class="rule-body">
+                  <p>
+                    <strong>Autonomous Cadastral Flight Corridors:</strong> Survey drones operate within authorized green-zones 
+                    using Real-Time Kinematic (RTK) differential GPS and triple-return LiDAR scanners.
+                  </p>
+                  <ul class="rule-bullets">
+                    <li>Drone missions occur between 07:00 AM and 05:00 PM on working days under municipal flight authorization.</li>
+                    <li>Raw point clouds are processed in high-density voxel grids with automated building footprint snapping.</li>
+                    <li>Citizens receive advance SMS telemetry alerts prior to autonomous flight execution over their khasra.</li>
+                  </ul>
+                </div>
+              </article>
+
+              <!-- RULE 4 -->
+              <article class="rule-card">
+                <div class="rule-badge rule-warning">SUBTERRANEAN SAFETY</div>
+                <h3 class="rule-title">Subterranean Utility Corridor &amp; Right-of-Way (RoW) Safe Digging Bye-Laws</h3>
+                <div class="rule-meta">Municipal Corporation of Amritsar (MCA) By-Law 44 &bull; Gas &amp; Utility Protection</div>
+                <div class="rule-body">
+                  <p>
+                    <strong>Mandatory Utility Buffer:</strong> A strict 5.0-meter horizontal and 3.0-meter vertical buffer 
+                    must be preserved around high-pressure gas mains (PNG), municipal water trunk conduits, and high-voltage power feeders.
+                  </p>
+                  <ul class="rule-bullets">
+                    <li>Basement excavation encroaching into municipal gas conduits is an immediate non-compoundable offense.</li>
+                    <li>Ground Penetrating Radar (GPR) validation is legally compulsory before foundation pile driving.</li>
+                    <li>Telemetry feeds into the Unified Subterranean Asset Registry (USAR).</li>
+                  </ul>
+                </div>
+              </article>
+
+              <!-- RULE 5 -->
+              <article class="rule-card">
+                <div class="rule-badge rule-success">FINANCIAL PROTOCOL</div>
+                <h3 class="rule-title">Bharatkosh Non-Tax Receipt Portal (NTRP) &amp; Fee Schedule</h3>
+                <div class="rule-meta">Account Head: 0029 - Land Revenue &bull; Survey SLA: Next 2 Working Days</div>
+                <div class="rule-body">
+                  <p>
+                    <strong>Autonomous Drone Survey Tariff:</strong> All registration and survey verification fees are 
+                    processed through the official Bharatkosh Government Gateway with instantaneous electronic receipt generation.
+                  </p>
+                  <ul class="rule-bullets">
+                    <li>Base survey fee: ₹500 for standard residential plots ($le 250\text{ sq.yd}$).</li>
+                    <li>Multi-level verification tariff: ₹350 per additional vertical floor.</li>
+                    <li><strong>Service Level Agreement (SLA):</strong> Once paid, the autonomous LiDAR drone mission is executed within the <strong>next two working days</strong>.</li>
+                  </ul>
+                </div>
+              </article>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 3: NATIONAL CYBER SECURITY, STATE FIREWALLS & CRYPTOGRAPHIC SHA-256 HASHING -->
+        <section id="section-security" class="landing-section">
+          <div class="section-container">
+            <div class="section-header-block">
+              <span class="section-tag">CYBER SECURITY &amp; CRYPTOGRAPHY</span>
+              <h2 class="section-main-title">State Firewalls, WAF Shield &amp; Cryptographic SHA-256 Hashing</h2>
+              <p class="section-sub-text">
+                BHAVANINFO implements defense-in-depth security engineered to meet Cert-In guidelines, 
+                ISO/IEC 27001:2022 standards, and immutable cryptographic data hashing.
+              </p>
+            </div>
+
+            <!-- Security Architecture Highlights Grid -->
+            <div class="security-pillars-grid">
+              <div class="sec-card">
+                <div class="sec-icon">🛡️</div>
+                <h4>State Data Centre (SDC) Perimeter Firewalls &amp; WAF</h4>
+                <p>
+                  Next-Gen Web Application Firewall (WAF) inspects all incoming requests with deep packet inspection, 
+                  automatically mitigating SQL injection, cross-site scripting (XSS), and Layer-7 volumetric DDoS attacks.
+                </p>
+                <div class="sec-chip">Cert-In Empaneled &bull; WAF Active</div>
+              </div>
+
+              <div class="sec-card">
+                <div class="sec-icon">🔒</div>
+                <h4>SHA-256 Cryptographic Hash Verification</h4>
+                <p>
+                  Every cadastral parcel, 3D point cloud, and Jamabandi mutation is cryptographically signed with an 
+                  immutable <strong>SHA-256 digital fingerprint</strong> (FIPS 180-4 standard). Any unauthorized record tampering 
+                  immediately invalidates the block hash.
+                </p>
+                <div class="sec-chip">SHA-256 Merkle Ledger</div>
+              </div>
+
+              <div class="sec-card">
+                <div class="sec-icon">🔑</div>
+                <h4>AES-256-GCM Encryption &amp; Aadhaar Data Vault</h4>
+                <p>
+                  All land titles and citizen telemetry are encrypted at rest using AES-256-GCM hardware keys. In transit, 
+                  TLS 1.3 with SHA-384 / ECDSA certificates safeguards every payload against interception.
+                </p>
+                <div class="sec-chip">Aadhaar Data Vault Compliant</div>
+              </div>
+
+              <div class="sec-card">
+                <div class="sec-icon">🔏</div>
+                <h4>PKI Digital Tokens (DSC) &amp; JanParichay NSSO</h4>
+                <p>
+                  Officers and revenue registrars authorize 3D mutation entries using USB hardware Cryptographic Tokens 
+                  (FIPS 140-2 Level 3) with 2048-bit RSA PKI Digital Signature Certificates (DSC).
+                </p>
+                <div class="sec-chip">eMudhra PKI Level-3</div>
+              </div>
+            </div>
+
+            <!-- Live Cryptographic SHA-256 Ledger Preview -->
+            <div class="sha-ledger-box">
+              <div class="sha-ledger-header">
+                <div>
+                  <h4 style="margin: 0; font-size: 0.95rem; color: #0f172a; font-weight: 700;">
+                    ⛓️ Live Cryptographic SHA-256 Cadastre Ledger &amp; Merkle Root
+                  </h4>
+                  <span style="font-size: 0.74rem; color: #64748b;">
+                    Immutable hash chain verifying cadastral integrity in real time across State Data Centre nodes
+                  </span>
+                </div>
+                <div class="sha-live-indicator">
+                  <span class="pulse-dot"></span> WAF Shield: Active &bull; Block Time: Instantaneous
+                </div>
+              </div>
+
+              <div class="sha-ledger-table-wrap">
+                <table class="sha-table">
+                  <thead>
+                    <tr>
+                      <th>Block #</th>
+                      <th>ULPIN</th>
+                      <th>Khasra / Owner</th>
+                      <th>SHA-256 Cryptographic Hash (FIPS 180-4)</th>
+                      <th>Audit Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="landing-sha-ledger-body">
+                    <tr>
+                      <td><strong>#001</strong></td>
+                      <td><code>BCN501B1NA2CH0</code></td>
+                      <td>Khasra 412/1 &bull; Sardar Harpreet Singh</td>
+                      <td><code class="sha-hash-text">0x9a83f10c842e5d1b7829fa03328e19b0271cba8821940182743810fecaa01924</code></td>
+                      <td><span class="badge-valid">✅ VERIFIED</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>#002</strong></td>
+                      <td><code>PB020011014019</code></td>
+                      <td>Khasra 308/2 &bull; Gurcharan Singh</td>
+                      <td><code class="sha-hash-text">0x47d2b99810a4e7c3b281f93021947b192837482910fedcba9837162534120984</code></td>
+                      <td><span class="badge-valid">✅ VERIFIED</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>#003</strong></td>
+                      <td><code>PB020011013082</code></td>
+                      <td>Khasra 220/1 &bull; Navjot Singh Sidhu</td>
+                      <td><code class="sha-hash-text">0xb1298471928374a8b7c6d5e4f3a2b1c09876543210fedcba9876543210fedcba</code></td>
+                      <td><span class="badge-valid">✅ VERIFIED</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>#004</strong></td>
+                      <td><code>PB020011012201</code></td>
+                      <td>Khasra 195/4 &bull; Balwinder Singh Dhillon</td>
+                      <td><code class="sha-hash-text">0x3f982173489127cba87612349081237490182374901823749018237490182374</code></td>
+                      <td><span class="badge-valid">✅ VERIFIED</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- SECTION 4: CITIZEN CHARTER, FAQ & RTI -->
+        <section id="section-charter" class="landing-section bg-alt">
+          <div class="section-container">
+            <div class="section-header-block">
+              <span class="section-tag">PUBLIC TRANSPARENCY &amp; SERVICES</span>
+              <h2 class="section-main-title">Citizen Charter &amp; Frequently Asked Questions</h2>
+              <p class="section-sub-text">
+                Under the Right to Information Act (RTI 2005) and the Punjab Transparency in Public Services Act, 
+                citizens have the right to transparent, timely delivery of revenue services.
+              </p>
+            </div>
+
+            <div class="faq-accordion-grid">
+              <div class="faq-card">
+                <h4>❓ How do I verify my building's 3D Digital Twin?</h4>
+                <p>
+                  Click on the <strong>Citizen / Officer Sign In</strong> button on the top navigation bar. 
+                  Authenticate using your Aadhaar linked mobile number or JanParichay ID. Your properties will be 
+                  automatically indexed under your Bhu-Aadhaar portfolio where you can launch the 3D Inspector.
+                </p>
+              </div>
+
+              <div class="faq-card">
+                <h4>❓ What happens if my building receives a 24-hour statutory notice?</h4>
+                <p>
+                  Under Section 187 of the Punjab Municipal Act, an automated LiDAR anomaly notice is issued if an unauthorized 
+                  vertical extension or height violation is detected. You can view the exact 3D LiDAR discrepancy in the portal 
+                  and submit an electronic appeal or regularization challan before statutory expiry.
+                </p>
+              </div>
+
+              <div class="faq-card">
+                <h4>❓ When will the autonomous drone LiDAR survey be conducted?</h4>
+                <p>
+                  Upon submitting a new property registration and paying the e-challan via Bharatkosh Gateway, an autonomous 
+                  drone survey mission is automatically scheduled for dispatch within the <strong>next two working days</strong>.
+                </p>
+              </div>
+
+              <div class="faq-card">
+                <h4>❓ How does the portal protect against subterranean utility accidents?</h4>
+                <p>
+                  BHAVANINFO integrates Ground Penetrating Radar (GPR) layers down to -30ft depth, visualizing city gas pipelines, 
+                  electrical conduits, potable water lines, and sanitary sewer culverts. Safe digging zones are displayed in real-time.
+                </p>
+              </div>
+            </div>
+
+            <!-- Citizen Support Contact Banner -->
+            <div class="support-contact-banner">
+              <div>
+                <h4 style="margin: 0 0 4px 0; font-size: 1rem; color: #0f172a; font-weight: 700;">Department Cadastral Helpline &amp; Grievance Cell</h4>
+                <p style="margin: 0; font-size: 0.8rem; color: #475569;">
+                  District Administrative Complex, Court Road, Amritsar &bull; Email: cadastre-support@punjab.gov.in &bull; Toll-Free: 1800-180-2026
+                </p>
+              </div>
+              <button type="button" class="btn-gov-signin" onclick="window.app.openLoginModal()">
+                <span>🔑</span> Enter Portal Now
+              </button>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- GOVERNMENT PUBLIC FOOTER -->
+        <footer class="landing-footer">
+          <div class="footer-inner">
+            <div class="footer-brand-col">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <span style="font-size: 1.4rem;">🏛️</span>
+                <strong style="font-size: 1.1rem; color: #0f172a;">BHAVANINFO</strong>
+                <span class="nav-domain-badge">bhanav.govt</span>
+              </div>
+              <p style="font-size: 0.78rem; color: #475569; line-height: 1.5;">
+                Official 3D Cadastral Digital Twin &amp; Bhu-Aadhaar Portal.<br>
+                Designed and developed for the Department of Land Resources (DoLR), 
+                Ministry of Rural Development, Government of India &amp; State of Punjab.
+              </p>
+            </div>
+
+            <div class="footer-links-col">
+              <h5>STATUTORY FRAMEWORK</h5>
+              <ul>
+                <li><a href="#section-rules">Punjab Municipal Act (Sec 187)</a></li>
+                <li><a href="#section-rules">ISO 19152 (3D LADM)</a></li>
+                <li><a href="#section-rules">SVAMITVA 2.0 Guidelines</a></li>
+                <li><a href="#section-rules">DILRMP Operational Directives</a></li>
+              </ul>
+            </div>
+
+            <div class="footer-links-col">
+              <h5>CYBER SECURITY</h5>
+              <ul>
+                <li><a href="#section-security">WAF Firewall Shield</a></li>
+                <li><a href="#section-security">SHA-256 Ledger Audit</a></li>
+                <li><a href="#section-security">Cert-In Compliance</a></li>
+                <li><a href="#section-security">Aadhaar Data Vault</a></li>
+              </ul>
+            </div>
+
+            <div class="footer-links-col">
+              <h5>CITIZEN SERVICES</h5>
+              <ul>
+                <li><a href="#section-charter">Citizen Charter</a></li>
+                <li><a href="#section-charter">RTI Act 2005 Disclosures</a></li>
+                <li><a href="javascript:void(0)" onclick="window.app.openLoginModal()">MeriPehchaan NSSO</a></li>
+                <li><a href="javascript:void(0)" onclick="window.app.openLoginModal()">Aadhaar e-KYC</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="footer-bottom-bar">
+            <span>&copy; 2026 Department of Land Resources &amp; Revenue Records, Government of Punjab. All Rights Reserved.</span>
+            <span>Site best viewed in modern browsers (Chrome, Edge, Firefox, Safari) at 100% zoom.</span>
+          </div>
+        </footer>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 2: CITIZEN DASHBOARD (Properties Portfolio) -->
+    <section id="view-dashboard" class="view-panel">
+      <div class="dashboard-container">
+        
+        <!-- Citizen Profile Banner -->
+        <div class="citizen-profile-banner">
+          <div class="profile-info">
+            <div class="profile-avatar" id="profile-avatar-box" style="overflow: hidden; display: flex; align-items: center; justify-content: center; width: 56px; height: 56px; border-radius: 50%; background: #00274d; border: 2px solid #ffd700;">
+              <img id="profile-avatar-img" src="" alt="Citizen Photo" style="display: none; width: 100%; height: 100%; object-fit: cover;">
+              <span id="profile-avatar-initials" style="font-weight: 700; font-size: 1.1rem; color: #ffffff;">HS</span>
+            </div>
+            <div class="profile-details">
+              <h2 id="profile-name">Sardar Harpreet Singh</h2>
+              <div class="profile-meta">
+                <span id="profile-aadhaar">Aadhaar: XXXX-XXXX-8921</span>
+                <span id="profile-mobile">Mobile: +91 98765-XXXXX</span>
+                <span id="profile-dob-tag" style="display: none; background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 4px; font-weight: 600;"></span>
+                <span class="verified-tag">✓ Aadhaar Verified Citizen</span>
+              </div>
+              <p id="profile-address" style="font-size: 0.78rem; color: #cfe1f7; margin-top: 4px;">H.No. 412, Heritage Zone, Amritsar - 143001, Punjab</p>
+            </div>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button id="btn-open-district-report" class="btn-primary" style="background: #0284c7; border-color: #38bdf8; color: #ffffff; font-weight: 700;" onclick="window.app && window.app.switchView('report')">
+              📊 District Cadastre Report
+            </button>
+            <button id="btn-open-register-modal" class="btn-secondary" style="background: var(--gov-saffron); border-color: #ff9933; color: #00274d; font-weight: 700;">
+              ➕ Register New Land / Building
+            </button>
+          </div>
+        </div>
+
+        <!-- Action & Stats Bar -->
+        <div class="action-bar">
+          <div class="section-title">
+            <span>📋</span> Properties Registered Under Bhu-Aadhaar (ULPIN)
+          </div>
+          <div style="display: flex; gap: 12px; font-size: 0.82rem;">
+            <div style="background: #ffffff; padding: 6px 14px; border-radius: 6px; border: 1px solid var(--gov-border);">
+              Total Parcels: <strong id="stat-total-props">3</strong>
+            </div>
+            <div style="background: #dcfce7; color: #166534; padding: 6px 14px; border-radius: 6px;">
+              Digitalized 3D Twins: <strong id="stat-digital-props">1</strong>
+            </div>
+            <div style="background: #fee2e2; color: #991b1b; padding: 6px 14px; border-radius: 6px;">
+              AI Flags (24h Notice): <strong id="stat-flagged-props">1</strong>
+            </div>
+            <div style="background: #fef3c7; color: #92400e; padding: 6px 14px; border-radius: 6px;">
+              Pending Survey: <strong id="stat-pending-props">1</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Property Grid Container -->
+        <div id="dashboard-property-grid" class="property-grid">
+          <!-- Dynamically populated by app.js -->
+        </div>
+
+      </div>
+    </section>
+ 
+    <!-- VIEW 2B: MUNICIPAL AUTHORITY CADASTRE ENFORCEMENT CENTER -->
+    <section id="view-officer" class="view-panel">
+      <div class="dashboard-container">
+        
+        <!-- Officer Authority Banner -->
+        <div class="citizen-profile-banner" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); border-left-color: #ffd700;">
+          <div class="profile-info">
+            <div class="profile-avatar" style="background: #ffd700; color: #1e1b4b; border-color: #ffffff;">VS</div>
+            <div class="profile-details">
+              <h2>Shri Vikramjit Singh, PCS</h2>
+              <div class="profile-meta">
+                <span>Additional Deputy Commissioner (Revenue) &bull; PCS Cadre</span>
+                <span class="verified-tag" style="background: rgba(255,215,0,0.2); border-color: #ffd700; color: #ffd700;">✓ Competent Authority</span>
+              </div>
+              <p style="font-size: 0.78rem; color: #e0e7ff; margin-top: 4px;">District Administrative Complex, Court Road, Amritsar Cadastre Division</p>
+            </div>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn-secondary" onclick="window.app.switchView('map')" style="background: var(--gov-saffron); border-color: #ff9933; color: #00274d; font-weight: 700;">
+              🌆 Open 3D City Cadastre Map
+            </button>
+          </div>
+        </div>
+
+        <!-- Municipal Enforcement Stats -->
+        <div class="action-bar">
+          <div class="section-title">
+            <span>⚖️</span> Municipal Cadastre Enforcement &amp; Drone SLAM Telemetry
+          </div>
+          <div style="display: flex; gap: 10px; font-size: 0.82rem; flex-wrap: wrap;">
+            <div style="background: #ffffff; padding: 6px 14px; border-radius: 6px; border: 1px solid var(--gov-border);">
+              Monitored Parcels: <strong>1,500+</strong>
+            </div>
+            <div style="background: #fee2e2; color: #991b1b; padding: 6px 14px; border-radius: 6px;">
+              Active 24h Notices: <strong id="officer-stat-violations">14 Flagged</strong>
+            </div>
+            <div style="background: #dbeafe; color: #1e40af; padding: 6px 14px; border-radius: 6px;">
+              Autonomous Drone Patrols: <strong>2 In-Flight</strong>
+            </div>
+            <div style="background: #dcfce7; color: #166534; padding: 6px 14px; border-radius: 6px;">
+              Challan Fines Imposed: <strong>₹18.45 Lakhs</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Violations Grid -->
+        <div class="officer-violations-container" style="background: #ffffff; border-radius: 8px; border: 1px solid var(--gov-border); padding: 18px; margin-top: 14px;">
+          <h4 style="color: var(--gov-blue-dark); margin-bottom: 12px; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center;">
+            <span>🚨 Priority AI Violations Requiring Statutory Action (Sec 187 Punjab Municipal Act)</span>
+            <span style="font-size: 0.75rem; color: #64748b; font-weight: normal;">Automated LiDAR SLAM 3R Audit Queue</span>
+          </h4>
+          
+          <table style="width: 100%; border-collapse: collapse; font-size: 0.82rem; text-align: left;">
+            <thead>
+              <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0; color: #475569;">
+                <th style="padding: 10px;">ULPIN</th>
+                <th style="padding: 10px;">Owner &amp; Khasra</th>
+                <th style="padding: 10px;">Violation Detected</th>
+                <th style="padding: 10px;">24h Notice Countdown</th>
+                <th style="padding: 10px;">Enforcement Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 10px; font-family: monospace; font-weight: 700; color: #0369a1;">BCN501B1NA2CH0</td>
+                <td style="padding: 10px;">Sardar Harpreet Singh<br><span style="color: #64748b;">Khasra No. 412/1</span></td>
+                <td style="padding: 10px;"><span style="color: #b91c1c; font-weight: 600;">Declared G+1; LiDAR SLAM detected unauthorized Level 3 (+3.2m excess)</span></td>
+                <td style="padding: 10px;"><span class="timer-countdown">14h 22m remaining</span></td>
+                <td style="padding: 10px;">
+                  <button class="btn-card highlight" style="padding: 5px 10px; font-size: 0.75rem;" onclick="window.app.inspectParcel('BCN501B1NA2CH0')">
+                    🏢 Inspect 3D Twin
+                  </button>
+                </td>
+              </tr>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 10px; font-family: monospace; font-weight: 700; color: #0369a1;">PB020011014019</td>
+                <td style="padding: 10px;">Gurcharan Singh<br><span style="color: #64748b;">Khasra No. 308/2</span></td>
+                <td style="padding: 10px;"><span style="color: #b91c1c; font-weight: 600;">Ground penetrating radar detected -15ft basement encroachment into municipal gas conduit right-of-way</span></td>
+                <td style="padding: 10px;"><span class="timer-countdown">21h 05m remaining</span></td>
+                <td style="padding: 10px;">
+                  <button class="btn-card highlight" style="padding: 5px 10px; font-size: 0.75rem;" onclick="window.app.locateOnMap('PB020011014019')">
+                    🗺️ Locate on Map
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- VIEW 3: 2D SATELLITE CADASTRE MAP -->
+    <section id="view-map" class="view-panel">
+      <div class="map-view-container">
+        
+        <!-- Map Element (Unobstructed Canvas) -->
+        <div id="cadastre-map"></div>
+
+        <!-- Floating Map Interactive Drawing / Selection HUD Toolbar -->
+        <div id="map-drawing-toolbar" class="map-drawing-hud" style="display: none;">
+          <div class="drawing-hud-title">
+            <span id="drawing-hud-icon" style="font-size: 1.2rem;">✏️</span>
+            <span id="drawing-hud-text">Click on map to drop corners of your land boundary (at least 3 points)</span>
+          </div>
+          <div class="drawing-hud-stats">
+            <span id="drawing-hud-points">Vertices: <strong>0 points</strong></span>
+            <span id="drawing-hud-area">Calculated Area: <strong>0 sq.yd (0 sq.ft)</strong></span>
+          </div>
+          <div class="drawing-hud-actions">
+            <button type="button" id="btn-finish-drawing" class="btn-primary" style="padding: 6px 14px; font-size: 0.8rem; background: #16a34a;" disabled>
+              ✅ Complete &amp; Use Boundary
+            </button>
+            <button type="button" id="btn-undo-drawing-point" class="btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;">
+              ↩️ Undo Point
+            </button>
+            <button type="button" id="btn-cancel-drawing" class="btn-card" style="padding: 6px 12px; font-size: 0.8rem; background: #fee2e2; color: #991b1b; border: none;">
+              ❌ Cancel
+            </button>
+          </div>
+        </div>
+
+        <!-- Floating Map Toast / Status Notification -->
+        <div id="map-toast" style="display: none; position: absolute; top: 75px; left: 50%; transform: translateX(-50%); background: rgba(11, 39, 77, 0.95); backdrop-filter: blur(8px); border: 1.5px solid #38bdf8; color: #fff; padding: 8px 18px; border-radius: 24px; font-size: 0.82rem; font-weight: 600; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.4); pointer-events: none;"></div>
+
+        <!-- Cursor Following Hover HUD Tooltip -->
+        <div id="map-hover-hud" class="map-hover-hud"></div>
+
+        <!-- Map Legend (Collapsible, Sleek Glassmorphic) -->
+        <div class="map-legend" id="map-cadastre-legend">
+          <div class="legend-header" onclick="document.getElementById('map-cadastre-legend').classList.toggle('collapsed')" title="Click to Collapse / Expand Legend">
+            <span class="legend-title">CADASTRE LEGEND</span>
+            <span class="legend-toggle-icon">▼</span>
+          </div>
+          <div class="legend-items-body">
+            <div class="legend-item">
+              <div class="legend-color" style="background: #0ea5e9; border: 1.5px solid #38bdf8;"></div>
+              <span>Digitalized 3D Parcel</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: #dc2626; border: 1.5px solid #ef4444;"></div>
+              <span>AI Anomaly Flagged (24h Notice)</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: #f59e0b; border: 1.5px solid #fbbf24;"></div>
+              <span>Pending Drone SLAM Survey</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floating 2D/3D Map Controls (Positioned Down, Zoom In/Out, Satellite & Realistic 3D Modes) -->
+        <div id="map-floating-controls" class="floating-controls-cluster map-bottom-controls">
+          <button type="button" id="btn-map-zoom-in" class="ctrl-btn" title="Zoom In">➕</button>
+          <button type="button" id="btn-map-zoom-out" class="ctrl-btn" title="Zoom Out">➖</button>
+          <button type="button" id="btn-map-reset-cam" class="ctrl-btn" title="Reset View (Amritsar Center)">🎯</button>
+          <div class="ctrl-divider"></div>
+          <button type="button" id="btn-mode-satellite-ctrl" class="ctrl-btn active" title="Satellite Mode (High-Res Aerial)">🛰️</button>
+          <button type="button" id="btn-mode-realistic-ctrl" class="ctrl-btn" title="Realistic Mode (3D Extruded Buildings)">🏢</button>
+          <button type="button" id="btn-map-measure" class="ctrl-btn" title="Measure Cadastral Boundary (6 Dots)">📐</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- VIEW 4: 3D DIGITAL TWIN SPLIT-SCREEN WORKSPACE -->
+    <section id="view-twin" class="view-panel">
+      <div class="twin-workspace">
+        
+        <!-- LEFT PANEL: LAND REGISTRY DOSSIER & SUB-ULPIN HUD -->
+        <aside class="twin-left-panel">
+          <div class="dossier-header">
+            <button id="btn-back-to-map" class="dossier-nav-back">&larr; Back to Map</button>
+            <h3>BHAVANINFO Digital Twin Dossier</h3>
+            <div id="dossier-ulpin-val" class="dossier-ulpin">BCN501B1NA2CH0</div>
+            <div style="font-size: 0.75rem; color: #cfe1f7; margin-top: 2px;">ISO 19152 (LADM 3D) Verified Record</div>
+
+            <!-- 14-Digit Bhu-Aadhaar Structure Breakdown Badge & Inspector -->
+            <div class="ulpin-decoder-wrap">
+              <div class="ulpin-decoder-title">
+                <span>🇮🇳 BHU-AADHAAR (ULPIN) 14-DIGIT STATUTORY STANDARD</span>
+              </div>
+              <div class="ulpin-segment-grid">
+                <div class="ulpin-seg-box" title="Characters 1–3: Regional Cadastral Grid Sector (BCN = Amritsar Cadastre Grid)">
+                  <span class="seg-code" id="ulpin-seg-state">BCN</span>
+                  <span class="seg-label">Grid Sec</span>
+                </div>
+                <div class="ulpin-seg-box" title="Characters 4–6: Cadastral Survey Block (#501 Kot Atma Singh)">
+                  <span class="seg-code" id="ulpin-seg-dist">501</span>
+                  <span class="seg-label">Block</span>
+                </div>
+                <div class="ulpin-seg-box" title="Characters 7–10: Vertex Centroid Geohash (Lat 31.6103°N, Lng 74.8599°E)">
+                  <span class="seg-code" id="ulpin-seg-tehsil">B1NA</span>
+                  <span class="seg-label">GeoHash</span>
+                </div>
+                <div class="ulpin-seg-box" title="Characters 11–12: Parcel Polyline Signature">
+                  <span class="seg-code" id="ulpin-seg-village">2C</span>
+                  <span class="seg-label">PolySig</span>
+                </div>
+                <div class="ulpin-seg-box highlight" title="Characters 13–14: ECCMA Modulo-36 Tamper Checksum">
+                  <span class="seg-code" id="ulpin-seg-plot">H0</span>
+                  <span class="seg-label">ChkSum</span>
+                </div>
+              </div>
+              <div class="ulpin-breakdown-details" id="ulpin-breakdown-desc">
+                <div class="bhu-aadhaar-pill-row">
+                  <span class="bhu-pill">🌐 Grid: BCN (Punjab North)</span>
+                  <span class="bhu-pill">🏛️ Block #501</span>
+                  <span class="bhu-pill">🛰️ Hash: B1NA (31.6103°N, 74.8599°E)</span>
+                  <span class="bhu-pill plot-pill">📐 Mod-36: 2CH0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dossier-content">
+            
+            <!-- AI Anomaly Alert Card (If Flagged) -->
+            <div id="dossier-anomaly-card" class="dossier-card" style="display: none; border-color: #f87171; background: #fff1f2;">
+              <h5 style="color: #b91c1c;">
+                <span>🚨 AI ANOMALY &bull; STATUTORY 24H NOTICE</span>
+                <span id="dossier-timer-badge" class="timer-countdown">14h 22m remaining</span>
+              </h5>
+              <p id="dossier-anomaly-desc" style="font-size: 0.8rem; color: #991b1b; line-height: 1.4; margin-bottom: 8px;"></p>
+              <div style="font-size: 0.72rem; color: #7f1d1d;">
+                <strong>Sec 187 Punjab Municipal Act:</strong> Failure to report within 48h will result in cancellation of registration and forfeiture of challan fee as municipal fine.
+              </div>
+            </div>
+
+            <!-- Level Selector Tabs -->
+            <div style="font-size: 0.78rem; font-weight: 700; color: var(--gov-blue-dark); margin-bottom: 6px;">
+              VERTICAL 3D LEVELS (SUB-ULPIN SELECTOR):
+            </div>
+            <div id="level-picker-tabs" class="level-picker-tabs">
+              <!-- Dynamically populated -->
+            </div>
+
+            <!-- Level Specific Information Card -->
+            <div class="dossier-card" style="border-left: 4px solid var(--gov-blue);">
+              <h5>Active Level Details (Sub-ULPIN)</h5>
+              <div style="margin-bottom: 8px;">
+                <span style="font-size: 0.75rem; color: #64748b;">3D Sub-ULPIN Code:</span>
+                <div id="dossier-sub-ulpin" style="font-family: monospace; font-weight: 700; color: var(--gov-blue); font-size: 0.95rem;">-</div>
+              </div>
+              <div class="dossier-grid">
+                <div>
+                  <span>Level Description</span>
+                  <strong id="dossier-level-name">-</strong>
+                </div>
+                <div>
+                  <span>Level Owner</span>
+                  <strong id="dossier-level-owner">-</strong>
+                </div>
+                <div>
+                  <span>Carpet Area</span>
+                  <strong id="dossier-level-area">-</strong>
+                </div>
+                <div>
+                  <span>Survey Method</span>
+                  <strong>Drone SLAM 3R + LiDAR</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- Subterranean -30ft & Utilities Card -->
+            <div class="dossier-card">
+              <h5>Subterranean &amp; Utility Lines (-30ft Depth)</h5>
+              <div id="dossier-level-utilities" style="font-size: 0.8rem; color: #334155;">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+            <!-- BhuNaksha & Jamabandi Cadastral Revenue Record (NIC / PLRS Sync) -->
+            <div class="dossier-card bhunaksha-sync-card" style="border-left: 4px solid #16a34a; background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <h5 style="color: #166534; margin: 0; display: flex; align-items: center; gap: 6px;">
+                  <span>🏛️</span> BhuNaksha &amp; Jamabandi Sync (NIC/PLRS)
+                </h5>
+                <span class="badge-valid" style="font-size: 0.65rem; padding: 2px 6px;">✅ LIVE NIC SYNC</span>
+              </div>
+              <p style="font-size: 0.72rem; color: #15803d; margin-bottom: 10px; line-height: 1.35;">
+                Official Land Record of Rights (RoR) verified with <strong>jamabandi.punjab.gov.in</strong>. Judges can copy and verify these exact revenue details on the official portal.
+              </p>
+
+              <div class="dossier-grid" style="font-size: 0.78rem;">
+                <div>
+                  <span>District / Tehsil (ਜ਼ਿਲ੍ਹਾ / ਤਹਿਸੀਲ)</span>
+                  <strong id="bhunaksha-dist-tehsil">Amritsar (02) &bull; Amritsar-I</strong>
+                </div>
+                <div>
+                  <span>Village / Hadbast (ਪਿੰਡ / ਹੱਦਬਸਤ)</span>
+                  <strong id="bhunaksha-village-hadbast">Kot Atma Singh (Hadbast #101)</strong>
+                </div>
+                <div>
+                  <span>Khasra No (ਖਸਰਾ ਨੰ:)</span>
+                  <strong id="dossier-survey-val" style="color: #0284c7; font-size: 0.95rem; font-family: monospace;">Khasra No. 412/1</strong>
+                </div>
+                <div>
+                  <span>Khewat &amp; Khatouni (ਖੇਵਟ / ਖਤੌਨੀ)</span>
+                  <strong id="dossier-khata-val">KH-2024/782 (Khewat 88 / Khatouni 142)</strong>
+                </div>
+                <div>
+                  <span>Registered Owner (ਮਾਲਕ)</span>
+                  <strong id="dossier-owner-val">Sardar Harpreet Singh</strong>
+                </div>
+                <div>
+                  <span>Cadastral Area (ਰਕਬਾ ਕਨਾਲ-ਮਰਲਾ)</span>
+                  <strong id="bhunaksha-area-kanal" style="color: #166534;">0 Kanal 7 Marla (220 sq.yd)</strong>
+                </div>
+                <div>
+                  <span>Classification (ਕਿਸਮ ਜ਼ਮੀਨ)</span>
+                  <strong id="bhunaksha-land-type">Gair Mumkin Abadi (ਗ਼ੈਰ ਮੁਮਕਿਨ ਆਬਾਦੀ)</strong>
+                </div>
+                <div>
+                  <span>Jamabandi Session Year</span>
+                  <strong>2023-2024 (Digital RoR)</strong>
+                </div>
+                <div style="grid-column: span 2;">
+                  <span>Last Autonomous Drone Survey</span>
+                  <strong id="dossier-scandate-val">-</strong>
+                </div>
+              </div>
+
+              <!-- Action Bar for Judges to Copy and Check on BhuNaksha -->
+              <div class="bhunaksha-actions-bar" style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #bbf7d0; display: flex; flex-direction: column; gap: 6px;">
+                <div style="display: flex; gap: 6px;">
+                  <button type="button" id="btn-copy-bhunaksha" class="btn-card" style="flex: 1; background: #0284c7; color: #ffffff; border: none; padding: 7px 10px; font-size: 0.74rem; font-weight: 700; border-radius: 5px; cursor: pointer;" onclick="window.app.copyActiveBhuNaksha()">
+                    📋 Copy Details for BhuNaksha
+                  </button>
+                  <a href="https://jamabandi.punjab.gov.in/" target="_blank" class="btn-card" style="flex: 1; background: #166534; color: #ffffff; text-align: center; text-decoration: none; padding: 7px 10px; font-size: 0.74rem; font-weight: 700; border-radius: 5px; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                    🌐 Open jamabandi.punjab.gov.in ↗
+                  </a>
+                </div>
+                <button type="button" class="btn-card" style="background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; padding: 6px 10px; font-size: 0.74rem; font-weight: 600; border-radius: 5px; text-align: center; cursor: pointer;" onclick="window.app.viewOfficialFard(window.app.activeParcel?.ulpin)">
+                  📜 View Official Punjab Fard (RoR Certificate)
+                </button>
+              </div>
+            </div>
+
+            <!-- Building Measurements & Spatial Coordinates Card -->
+            <div class="dossier-card" id="dossier-measurements-card">
+              <h5>📐 Building Measurements &amp; Spatial Coordinates</h5>
+              <div class="dossier-grid">
+                <div>
+                  <span>Building Total Height</span>
+                  <strong id="dossier-height-val" style="color: #38bdf8;">9.6 m (31.5 ft)</strong>
+                </div>
+                <div>
+                  <span>Floor Area Ratio (FAR)</span>
+                  <strong id="dossier-far-val" style="color: #10b981;">1.85 (Compliant)</strong>
+                </div>
+                <div>
+                  <span>Total Built-Up Area</span>
+                  <strong id="dossier-builtup-val">3,480 sq.ft</strong>
+                </div>
+                <div>
+                  <span>Land Plot Area</span>
+                  <strong id="dossier-plotarea-val">385 sq.yd</strong>
+                </div>
+                <div>
+                  <span>PSPCL Electric Meter</span>
+                  <strong id="dossier-meter-val" style="font-family: monospace; color: #fbbf24;">PSPCL-LT-88219</strong>
+                </div>
+                <div>
+                  <span>Municipal Water Connection</span>
+                  <strong id="dossier-watermeter-val" style="font-family: monospace; color: #38bdf8;">MCA-W-4102</strong>
+                </div>
+                <div style="grid-column: span 2;">
+                  <span>GPS Boundary Centroid</span>
+                  <strong id="dossier-coordinates-val" style="font-family: monospace; font-size: 0.76rem; color: #0284c7;">31.61034° N, 74.85998° E</strong>
+                </div>
+                <!-- Google Maps Direction Redirection Button -->
+                <div style="grid-column: span 2; margin-top: 6px;">
+                  <a id="btn-dossier-gmaps" href="https://www.google.com/maps/dir/?api=1&destination=31.61034,74.85998" target="_blank" class="btn-gmaps-direction">
+                    <span>📍</span> Open in Google Maps (GPS Directions) ↗
+                  </a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </aside>
+
+        <!-- RIGHT CANVAS: THREE.JS 3D VIEWPORT -->
+        <div class="twin-canvas-container">
+          <div id="twin-viewport"></div>
+
+          <!-- PENDING DRONE SLAM SURVEY OVERLAY (Shown when building survey is pending) -->
+          <div id="twin-pending-survey-overlay" class="twin-pending-overlay" style="display: none;">
+            <div class="pending-survey-card">
+              <div class="pending-badge">⏳ DRONE LiDAR SURVEY PENDING</div>
+              <h4 id="pending-survey-title">Autonomous Drone SLAM 3R Survey Scheduled</h4>
+              <p id="pending-survey-desc">
+                No 3D Blueprint is available yet. An autonomous cadastral LiDAR drone survey is scheduled to execute within the <strong>next two working days</strong>.
+              </p>
+              <div class="pending-meta-grid">
+                <div>Khasra: <strong id="pending-khasra-val">Khasra No. 345/1</strong></div>
+                <div>ULPIN: <strong id="pending-ulpin-val">PB020011012201</strong></div>
+                <div>Declared Floors: <strong id="pending-floors-val">1 Level (Ground)</strong></div>
+                <div>Cadastral Area: <strong id="pending-area-val">385 sq.yd</strong></div>
+              </div>
+              <button type="button" id="btn-trigger-drone-sim" class="btn-trigger-drone" onclick="window.app.triggerLiveDroneSimulation()">
+                <span>🚀</span> Start Drone LiDAR SLAM Survey
+              </button>
+            </div>
+          </div>
+
+          <!-- 3D Floating Sub-ULPIN Holographic Tag -->
+          <div id="sub-ulpin-hover-tag" class="sub-ulpin-hover-tag"></div>
+
+          <!-- Floating 3D Twin Controls (Positioned Down, Zoom In/Out, Satellite & Realistic 3D Modes) -->
+          <div id="twin-floating-controls" class="floating-controls-cluster twin-bottom-controls">
+            <button type="button" id="btn-twin-zoom-in" class="ctrl-btn" title="Zoom In 3D Model">➕</button>
+            <button type="button" id="btn-twin-zoom-out" class="ctrl-btn" title="Zoom Out 3D Model">➖</button>
+            <button type="button" id="btn-twin-reset-cam" class="ctrl-btn" title="Reset Camera View">🎯</button>
+            <div class="ctrl-divider"></div>
+            <button type="button" id="btn-mode-textured" class="ctrl-btn active" title="Realistic 3D Mode (Daytime Facade &amp; Aerial)">🏢</button>
+            <button type="button" id="btn-mode-blueprint" class="ctrl-btn" title="Daytime CAD Blueprint Mode">📐</button>
+            <button type="button" id="btn-twin-satellite-toggle" class="ctrl-btn active" title="Aerial Satellite Ground Tile">🛰️</button>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- VIEW 5: DISTRICT CADASTRE EXECUTIVE REPORT & ANALYTICS -->
+    <section id="view-report" class="view-panel" style="display: none;">
+      <div class="report-view-container">
+        
+        <!-- FLOATING MINI REVEAL PILL (Appears when ribbon smoothly disappears on scroll down) -->
+        <div class="report-reveal-pill-wrap no-print">
+          <button type="button" id="report-mini-reveal-pill" class="report-mini-reveal-pill" title="Click to show jurisdiction filters and download buttons">
+            <span>⚙️</span> Controls &amp; Download Options ▼
+          </button>
+        </div>
+
+        <!-- TOP CONTROL & JURISDICTION SELECTION RIBBON -->
+        <div class="report-control-ribbon no-print">
+          <div class="report-ribbon-left">
+            <div class="report-brand-tag">
+              <span class="report-tag-icon">📊</span>
+              <div>
+                <strong>District Cadastre Executive Report</strong>
+                <span>Real-Time Autonomous LiDAR &amp; Land Utilization Audit</span>
+              </div>
+            </div>
+
+            <div class="report-selector-group">
+              <div class="report-select-item">
+                <label for="report-state-select">🏛️ State / UT:</label>
+                <select id="report-state-select" class="report-select">
+                  <option value="Punjab" selected>Punjab</option>
+                  <option value="Haryana">Haryana</option>
+                  <option value="NCT of Delhi">NCT of Delhi</option>
+                  <option value="Chandigarh">Chandigarh (UT)</option>
+                </select>
+              </div>
+
+              <div class="report-select-item">
+                <label for="report-district-select">📍 District:</label>
+                <select id="report-district-select" class="report-select">
+                  <option value="Amritsar" selected>Amritsar (3,600 Buildings)</option>
+                  <option value="Ludhiana">Ludhiana (3,000 Buildings)</option>
+                  <option value="Jalandhar">Jalandhar (2,500 Buildings)</option>
+                  <option value="Phagwara">Phagwara / Kapurthala (1,200 Buildings)</option>
+                  <option value="Patiala">Patiala</option>
+                  <option value="Mohali">SAS Nagar (Mohali)</option>
+                  <option value="Bathinda">Bathinda</option>
+                </select>
+              </div>
+
+              <div class="report-select-item">
+                <label for="report-locality-select">🏘️ Locality / Ward:</label>
+                <select id="report-locality-select" class="report-select">
+                  <option value="All" selected>🌐 All Localities &amp; Wards</option>
+                </select>
+              </div>
+
+              <button type="button" id="btn-refresh-report" class="btn-report-refresh" title="Reload District Analytics">
+                <span>🔄</span> Refresh
+              </button>
+            </div>
+          </div>
+
+          <div class="report-ribbon-right">
+            <!-- Prominent Download Report Action -->
+            <button type="button" id="btn-download-report-pdf" class="btn-download-report-pdf" title="Download Official Government Report (PDF / Print)">
+              <span class="dl-ico">📥</span>
+              <div class="dl-text">
+                <strong>Download Official Report</strong>
+                <span>PDF Format &bull; Cert Signed</span>
+              </div>
+            </button>
+            <button type="button" id="btn-export-report-csv" class="btn-export-report-csv" title="Export Master Building Register CSV">
+              <span>📊</span> Export CSV
+            </button>
+          </div>
+        </div>
+
+        <!-- LOADING STATE -->
+        <div id="report-loading-state" class="report-loading-overlay" style="display: none;">
+          <div class="report-spinner"></div>
+          <div>Compiling District Cadastre Audit &amp; LiDAR Telemetry...</div>
+        </div>
+
+        <!-- OFFICIAL PRINTABLE REPORT SHEET -->
+        <div id="district-report-sheet" class="district-report-sheet">
+
+          <!-- 1. OFFICIAL STATUTORY GOVERNMENT HEADER -->
+          <header class="report-doc-header">
+            <div class="report-doc-header-left">
+              <span class="report-emblem-seal">🏛️</span>
+              <div class="report-gov-details">
+                <div class="report-gov-republic">भारत सरकार &bull; GOVERNMENT OF INDIA</div>
+                <h2 class="report-gov-dept">Department of Revenue, Rehabilitation &amp; Disaster Management</h2>
+                <div class="report-gov-sub">Government of Punjab &bull; Directorate of Land Records (Jalandhar / Amritsar)</div>
+                <div class="report-gov-acts">Statutory Audit under Sec 187 Punjab Municipal Act 1976 &bull; ISO 19152 (3D LADM) &bull; SVAMITVA 2.0</div>
+              </div>
+            </div>
+
+            <div class="report-doc-header-right">
+              <div class="report-id-pill">
+                <span class="id-label">REPORT ID:</span>
+                <strong id="report-header-id" class="id-val">PB-CADASTRE-REP-2026-AMR-7968</strong>
+              </div>
+              <div class="report-meta-row">
+                <span>📅 Generated: <strong id="report-header-date">11-Sep-2026</strong></span>
+              </div>
+              <div class="report-meta-row">
+                <span>📍 Jurisdiction: <strong id="report-header-jurisdiction">Amritsar District, Punjab</strong></span>
+              </div>
+              <div class="report-meta-row">
+                <span>⚖️ Authority: <strong id="report-header-officer">Director of Land Records &amp; ADC (Revenue)</strong></span>
+              </div>
+              <div class="report-status-seal">✓ OFFICIAL AUDIT CERTIFIED</div>
+            </div>
+          </header>
+
+          <!-- 2. EXECUTIVE METRICS GRID (8 KPI CARDS) -->
+          <div class="report-section-block">
+            <div class="report-section-title">
+              <span class="sec-ico">📈</span>
+              <h3>Executive Cadastral Audit &amp; Building Typology Metrics</h3>
+            </div>
+
+            <div class="report-kpi-grid">
+              <!-- KPI 1: Total Buildings -->
+              <div class="report-kpi-card kpi-total">
+                <div class="kpi-top">
+                  <span class="kpi-icon">🏢</span>
+                  <span class="kpi-badge">Total Cadastre</span>
+                </div>
+                <div class="kpi-val" id="rep-kpi-total">3,600 Buildings</div>
+                <div class="kpi-sub" id="rep-kpi-total-sub">Total Footprint: 10.08 Lakh sq.yd</div>
+              </div>
+
+              <!-- KPI 2: Verified & Plan Approved -->
+              <div class="report-kpi-card kpi-verified">
+                <div class="kpi-top">
+                  <span class="kpi-icon">✅</span>
+                  <span class="kpi-badge">Verified &amp; Approved</span>
+                </div>
+                <div class="kpi-val" id="rep-kpi-verified">2,844</div>
+                <div class="kpi-sub" id="rep-kpi-verified-pct">79.0% of district cadastre</div>
+              </div>
+
+              <!-- KPI 3: Pending Verification -->
+              <div class="report-kpi-card kpi-pending">
+                <div class="kpi-top">
+                  <span class="kpi-icon">⏳</span>
+                  <span class="kpi-badge">Pending Drone Scan</span>
+                </div>
+                <div class="kpi-val" id="rep-kpi-pending">432</div>
+                <div class="kpi-sub" id="rep-kpi-pending-pct">12.0% scheduled for LiDAR scan</div>
+              </div>
+
+              <!-- KPI 4: AI Anomalies (24h Notice) -->
+              <div class="report-kpi-card kpi-anomaly">
+                <div class="kpi-top">
+                  <span class="kpi-icon">🚨</span>
+                  <span class="kpi-badge">AI Anomalies</span>
+                </div>
+                <div class="kpi-val" id="rep-kpi-anomaly">324</div>
+                <div class="kpi-sub" id="rep-kpi-anomaly-pct">9.0% statutory notices active</div>
+              </div>
+
+              <!-- KPI 5: Illegal Activity -->
+              <div class="report-kpi-card kpi-illegal">
+                <div class="kpi-top">
+                  <span class="kpi-icon">⚖️</span>
+                  <span class="kpi-badge">Illegal Activity</span>
+                </div>
+                <div class="kpi-val" id="rep-kpi-illegal">180</div>
+                <div class="kpi-sub" id="rep-kpi-illegal-pct">5.0% Sec 187 penalty issued</div>
+              </div>
+
+              <!-- KPI 6: Under Construction Lands -->
+              <div class="report-kpi-card kpi-construction">
+                <div class="kpi-top">
+                  <span class="kpi-icon">🏗️</span>
+                  <span class="kpi-badge">Under Construction</span>
+                </div>
+                <div class="kpi-val" id="rep-kpi-construction">432 Sites</div>
+                <div class="kpi-sub" id="rep-kpi-construction-pct">12.0% active plinth/superstructure</div>
+              </div>
+
+              <!-- KPI 7: Left Sites / Vacant Lands -->
+              <div class="report-kpi-card kpi-leftsites">
+                <div class="kpi-top">
+                  <span class="kpi-icon">🌾</span>
+                  <span class="kpi-badge">Left Sites / Vacant</span>
+                </div>
+                <div class="kpi-val" id="rep-kpi-leftsites">324 Parcels</div>
+                <div class="kpi-sub" id="rep-kpi-leftsites-pct">9.0% unbuilt infill plots</div>
+              </div>
+
+              <!-- KPI 8: Active Use vs Disused -->
+              <div class="report-kpi-card kpi-utilization">
+                <div class="kpi-top">
+                  <span class="kpi-icon">📦</span>
+                  <span class="kpi-badge">Land Utilization</span>
+                </div>
+                <div class="kpi-val" id="rep-kpi-active-vs-disused">Active: 2,664 (74%)</div>
+                <div class="kpi-sub" id="rep-kpi-disused-pct">Disused / Dormant: 180 (5%)</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. INTERACTIVE ANALYTICS: PIE / DONUT & BAR CHARTS -->
+          <div class="report-section-block">
+            <div class="report-section-title">
+              <span class="sec-ico">📊</span>
+              <h3>Interactive Graphs, Donut Charts &amp; Spatial District Analytics</h3>
+            </div>
+
+            <div class="report-charts-grid">
+              <!-- Chart 1: Verification & Violations Donut -->
+              <div class="report-chart-box">
+                <div class="chart-header">
+                  <h4>🏢 Building Audit &amp; Verification Breakdown</h4>
+                  <span class="chart-subtitle">Verified vs. Pending vs. AI Anomaly (24h Notice) vs. Illegal</span>
+                </div>
+                <div id="chart-verification-donut" class="chart-content"></div>
+              </div>
+
+              <!-- Chart 2: District Land Utilization Donut -->
+              <div class="report-chart-box">
+                <div class="chart-header">
+                  <h4>📦 Land Utilization &amp; Development Activity</h4>
+                  <span class="chart-subtitle">Active Use vs. Under Construction vs. Left Sites vs. Disused</span>
+                </div>
+                <div id="chart-landuse-donut" class="chart-content"></div>
+              </div>
+
+              <!-- Chart 3: Vertical Storey Distribution (Typology) -->
+              <div class="report-chart-box">
+                <div class="chart-header">
+                  <h4>📐 Vertical Typology &amp; Height Distribution</h4>
+                  <span class="chart-subtitle">Building Heights: G0, G1, G2, G3+ &amp; Subterranean Basements</span>
+                </div>
+                <div id="chart-height-bars" class="chart-content"></div>
+              </div>
+
+              <!-- Chart 4: Locality Hotspots Stacked Bar -->
+              <div class="report-chart-box">
+                <div class="chart-header">
+                  <h4>📍 Locality &amp; Ward Hotspots Breakdown</h4>
+                  <span class="chart-subtitle">Survey Density, Active Construction &amp; Violation Concentrations</span>
+                </div>
+                <div id="chart-locality-hotspots" class="chart-content"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. WHERE CONSTRUCTION IS ACTIVELY GOING ON -->
+          <div class="report-section-block">
+            <div class="report-section-title">
+              <span class="sec-ico">🏗️</span>
+              <div>
+                <h3>Where Construction is Actively Going On</h3>
+                <span class="sec-sub">Sanctioned Construction Sites, Superstructure Stages &amp; Autonomous LiDAR Drone Telemetry</span>
+              </div>
+            </div>
+
+            <div id="report-construction-cards" class="construction-cards-grid">
+              <!-- Dynamically populated by DistrictReportManager -->
+            </div>
+          </div>
+
+          <!-- 5. LEFT SITES & DISUSED / NOT-IN-USE LANDS -->
+          <div class="report-section-block">
+            <div class="report-split-catalogs">
+              <!-- Left Sites & Under-Constructed Lands -->
+              <div class="catalog-half">
+                <div class="report-section-title">
+                  <span class="sec-ico">🌾</span>
+                  <div>
+                    <h3>Left Sites &amp; Vacant Infill Lands</h3>
+                    <span class="sec-sub">Unbuilt plots, open Lal Lakir pockets &amp; sanctioned vacant parcels</span>
+                  </div>
+                </div>
+                <div id="report-leftsites-cards" class="catalog-cards-list">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+
+              <!-- Lands Not in Use / Disused -->
+              <div class="catalog-half">
+                <div class="report-section-title">
+                  <span class="sec-ico">📦</span>
+                  <div>
+                    <h3>Lands Not in Use &amp; Disused Parcels</h3>
+                    <span class="sec-sub">Dormant industrial/warehousing yards, non-active power meters &amp; disputed sites</span>
+                  </div>
+                </div>
+                <div id="report-disused-cards" class="catalog-cards-list">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6. MASTER DISTRICT BUILDING & CADASTRAL PARCEL REGISTER -->
+          <div class="report-section-block">
+            <div class="report-section-title">
+              <span class="sec-ico">📋</span>
+              <div style="flex: 1;">
+                <h3>District Master Building &amp; Parcel Cadastre Register</h3>
+                <span class="sec-sub">Complete cadastral audit records with 14-digit ULPIN, survey numbers, floors, land use, and property tax</span>
+              </div>
+              <span id="report-table-count" class="table-count-badge">Loading...</span>
+            </div>
+
+            <!-- Search & Filter Controls -->
+            <div class="report-table-toolbar no-print">
+              <div class="table-search-box">
+                <span class="t-ico">🔍</span>
+                <input type="text" id="report-table-search" placeholder="Filter by ULPIN, Owner, Khasra, Locality, Land Use..." autocomplete="off">
+              </div>
+
+              <div class="report-filter-chips">
+                <button type="button" class="report-filter-chip active" data-filter="all">All Buildings</button>
+                <button type="button" class="report-filter-chip" data-filter="construction">🏗️ Under Construction</button>
+                <button type="button" class="report-filter-chip" data-filter="leftsites">🌾 Left Sites</button>
+                <button type="button" class="report-filter-chip" data-filter="disused">📦 Disused</button>
+                <button type="button" class="report-filter-chip" data-filter="violations">🚨 Violations (24h Notice)</button>
+                <button type="button" class="report-filter-chip" data-filter="verified">✅ Verified</button>
+              </div>
+            </div>
+
+            <!-- Table Container -->
+            <div class="report-table-wrap">
+              <table class="report-data-table">
+                <thead>
+                  <tr>
+                    <th>14-Digit ULPIN</th>
+                    <th>Survey / Khasra No.</th>
+                    <th>Registered Owner</th>
+                    <th>Locality / Ward</th>
+                    <th>Storeys (Det / Decl)</th>
+                    <th>Land Utilization</th>
+                    <th>Audit Status</th>
+                    <th>Area (sq.yd)</th>
+                    <th>Property Tax (₹)</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="report-table-tbody">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 7. OFFICIAL STATUTORY SIGNOFF & DIGITAL SIGNATURE STAMP -->
+          <footer class="report-doc-footer">
+            <div class="report-sign-block">
+              <div class="sign-seal">
+                <div class="seal-circle">
+                  <span>🏛️</span>
+                  <strong>SEAL OF COMPETENT AUTHORITY</strong>
+                  <span>PUNJAB LAND RECORDS</span>
+                </div>
+              </div>
+              <div class="sign-meta">
+                <strong>(Shri Vikramjit Singh, PCS)</strong>
+                <span>Additional Deputy Commissioner (Revenue)</span>
+                <span>Competent Authority under Punjab Municipal Act 1976</span>
+                <span>Director of Land Records, Government of Punjab</span>
+                <div class="sign-hash">SHA-256: 0x8F4A2C19E73B902A5D18F374BC90EA1256E429DF... (Verified)</div>
+              </div>
+            </div>
+
+            <div class="report-disclaimer">
+              <p><strong>Statutory Notice:</strong> This Cadastral Report is generated using high-accuracy autonomous 3D LiDAR SLAM drone photogrammetry and Bhu-Aadhaar National Cadastral standard. Discrepancies detected trigger mandatory 24-hour response compliance under Section 187 of the Punjab Municipal Corporation Act. For grievance redressal, visit the nearest Tehsil Sub-Registrar Office.</p>
+            </div>
+          </footer>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================
+       5-STEP ONBOARDING TUTORIAL & QUICK START TIPS SYSTEM
+       ========================================================= -->
+
+  <!-- MODAL: WELCOME & 5 ESSENTIAL QUICK TIPS FOR NEW CITIZENS & OFFICERS (COMPACT & SLEEK) -->
+  <div id="onboarding-tips-modal" class="modal-backdrop" style="display: none;" onclick="if(event.target===this)window.app.closeQuickTipsModal()">
+    <div class="modal-card onboarding-modal-card">
+      <div class="onboarding-header">
+        <div class="onboarding-brand-line">
+          <span class="onboarding-emblem">🏛️</span>
+          <div>
+            <div class="onboarding-title-badge">BHAVANINFO • Quick Start Guide</div>
+            <h3 class="onboarding-main-title">5 Essential 3D Cadastre Navigation Tips</h3>
+          </div>
+        </div>
+        <button type="button" id="btn-close-onboarding-top" class="btn-modal-close" onclick="window.app && window.app.closeQuickTipsModal()" aria-label="Close guide">&times;</button>
+      </div>
+
+      <div class="onboarding-body">
+        <div class="onboarding-tips-grid">
+          <!-- Tip 1: 3D Navigation Controls -->
+          <div class="tip-card">
+            <div class="tip-card-header">
+              <span class="tip-num">1</span>
+              <span class="tip-icon">🖱️</span>
+              <strong>3D Navigation Controls</strong>
+            </div>
+            <p><strong>Left-Click &amp; Drag</strong> to rotate 360°; <strong>Right-Click &amp; Drag</strong> to tilt camera pitch; <strong>Scroll Wheel</strong> zooms from state down to street level.</p>
+          </div>
+
+          <!-- Tip 2: Instant City Fly-To -->
+          <div class="tip-card">
+            <div class="tip-card-header">
+              <span class="tip-num">2</span>
+              <span class="tip-icon">📍</span>
+              <strong>Quick City Navigation</strong>
+            </div>
+            <p>Click the <strong>Fly-To buttons</strong> (Amritsar, Ludhiana, Jalandhar, Phagwara) in the top toolbar to jump into dense 3D urban clusters with 10,300+ surveyed buildings.</p>
+          </div>
+
+          <!-- Tip 3: AI Violation Audits -->
+          <div class="tip-card">
+            <div class="tip-card-header">
+              <span class="tip-num">3</span>
+              <span class="tip-icon">🚨</span>
+              <strong>Audit AI Violations</strong>
+            </div>
+            <p>Select <strong>"🚨 Violations"</strong> in the filter bar to highlight unauthorized storeys and setback encroachments under active 24-hour statutory notice.</p>
+          </div>
+
+          <!-- Tip 4: 3D Digital Twin Inspector -->
+          <div class="tip-card">
+            <div class="tip-card-header">
+              <span class="tip-num">4</span>
+              <span class="tip-icon">🏢</span>
+              <strong>Level-by-Level 3D Twin</strong>
+            </div>
+            <p>Click any 3D building to inspect floor-by-floor heights, Sub-ULPIN strata titles, electricity meter telemetry, and property tax compliance in the 3D Inspector.</p>
+          </div>
+
+          <!-- Tip 5: Citizen Statutory Actions -->
+          <div class="tip-card tip-card-full">
+            <div class="tip-card-header">
+              <span class="tip-num">5</span>
+              <span class="tip-icon">📜</span>
+              <strong>Citizen &amp; Officer Actions</strong>
+            </div>
+            <p>Download certified <strong>Encumbrance Certificates (Form 15/16)</strong>, generate instant Building NOCs, or schedule autonomous drone LiDAR SLAM surveys with one click.</p>
+          </div>
+        </div>
+
+        <div class="onboarding-pro-strip">
+          <span class="pro-strip-badge">💡 PRO TIP</span>
+          <span>Press <kbd>Ctrl + K</kbd> anywhere to search properties by 14-digit ULPIN, owner, or city.</span>
+        </div>
+      </div>
+
+      <div class="onboarding-footer">
+        <label class="onboarding-checkbox-label">
+          <input type="checkbox" id="chk-dont-show-tips">
+          <span>Don't show tips on startup</span>
+        </label>
+        <div class="onboarding-footer-buttons">
+          <button type="button" id="btn-onboarding-skip" class="btn-onboarding-skip" onclick="window.app && window.app.skipTipsModal()">Skip Tutorial</button>
+          <button type="button" id="btn-onboarding-start" class="btn-onboarding-start" onclick="window.app && window.app.startGuidedTour()">🚀 Start 5-Step Tour</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERACTIVE 5-STEP SPOTLIGHT TOUR OVERLAY & CARD -->
+  <div id="interactive-tour-overlay" class="interactive-tour-overlay" style="display: none;">
+    <div id="tour-spotlight-box" class="tour-spotlight-box" style="display: none;"></div>
+    
+    <div id="interactive-tour-card" class="interactive-tour-card" style="display: none;">
+      <div class="tour-card-header">
+        <div class="tour-card-header-left">
+          <span id="tour-card-badge" class="tour-card-badge">Step 1 of 5</span>
+          <div id="tour-step-dots" class="tour-step-dots"></div>
+        </div>
+        <button type="button" id="tour-card-close-btn" class="tour-card-close" onclick="window.app && window.app.skipTour()" title="Skip &amp; Exit Tutorial">&times;</button>
+      </div>
+
+      <div class="tour-card-body">
+        <h4 id="tour-card-title" class="tour-card-title">Switch Between Digital Twin Modes</h4>
+        <div id="tour-card-what" class="tour-card-section tour-what"></div>
+        <div id="tour-card-when" class="tour-card-section tour-when"></div>
+        <div id="tour-card-tip" class="tour-card-tip"></div>
+      </div>
+
+      <div class="tour-card-footer">
+        <button type="button" id="tour-btn-skip-bottom" class="tour-btn-skip" onclick="window.app && window.app.skipTour()">Skip Tutorial</button>
+        <div class="tour-btn-nav-group">
+          <button type="button" id="tour-btn-prev" class="tour-btn-prev" onclick="window.app && window.app.prevTourStep()">&larr; Back</button>
+          <button type="button" id="tour-btn-next" class="tour-btn-next" onclick="window.app && window.app.nextTourStep()">Next Step &rarr;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CITIZEN & OFFICER AUTHENTICATION (MeriPehchaan / Aadhaar NSSO / DSC) -->
+  <div id="login-modal" class="modal-backdrop" style="display: none;" onclick="if(event.target===this)window.app.closeLoginModal()">
+    <div class="modal-card" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3 style="font-size: 1.15rem; margin: 0; color: #0f172a; font-weight: 700;">
+          🔑 MeriPehchaan / JanParichay (NSSO Sign In)
+        </h3>
+        <button type="button" class="btn-modal-close" onclick="window.app.closeLoginModal()" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 20px;">
+        <div class="login-jurisdiction-box" style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 12px; margin-bottom: 14px;">
+          <div style="font-size: 0.76rem; font-weight: 700; color: #00274d; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+            <span style="display: flex; align-items: center; gap: 6px;">🏛️ Operational Cadastre Division:</span>
+            <span style="font-size: 0.68rem; color: #16a34a; font-weight: 700; background: #dcfce7; padding: 1px 6px; border-radius: 4px;">ISO 19152 Active</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+            <div>
+              <label for="modal-login-state" style="font-size: 0.68rem; color: #475569; font-weight: 600; display: block; margin-bottom: 2px;">State</label>
+              <select id="modal-login-state" class="form-input" style="padding: 5px 6px; font-size: 0.75rem; border-radius: 4px;">
+                <option value="Punjab" selected>Punjab</option>
+                <option value="Haryana">Haryana</option>
+                <option value="NCT of Delhi">NCT of Delhi</option>
+              </select>
+            </div>
+            <div>
+              <label for="modal-login-district" style="font-size: 0.68rem; color: #475569; font-weight: 600; display: block; margin-bottom: 2px;">District</label>
+              <select id="modal-login-district" class="form-input" style="padding: 5px 6px; font-size: 0.75rem; border-radius: 4px;">
+                <option value="Amritsar" selected>Amritsar</option>
+                <option value="Jalandhar">Jalandhar</option>
+                <option value="Ludhiana">Ludhiana</option>
+                <option value="Patiala">Patiala</option>
+                <option value="Bathinda">Bathinda</option>
+              </select>
+            </div>
+            <div>
+              <label for="modal-login-mandal" style="font-size: 0.68rem; color: #475569; font-weight: 600; display: block; margin-bottom: 2px;">Mandal / Tehsil</label>
+              <select id="modal-login-mandal" class="form-input" style="padding: 5px 6px; font-size: 0.75rem; border-radius: 4px;">
+                <option value="Amritsar-I" selected>Amritsar-I</option>
+                <option value="Amritsar-II">Amritsar-II</option>
+                <option value="Ajnala">Ajnala</option>
+                <option value="Baba Bakala">Baba Bakala</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="auth-tab-buttons">
+          <button type="button" class="auth-tab active" data-auth-tab="aadhaar">Aadhaar OTP</button>
+          <button type="button" class="auth-tab" data-auth-tab="janparichay">JanParichay ID</button>
+          <button type="button" class="auth-tab" data-auth-tab="token">Digital Token (DSC)</button>
+        </div>
+
+        <!-- TAB 1: REAL AADHAAR OTP & e-KYC -->
+        <div id="auth-pane-aadhaar" class="auth-pane active">
+          <form id="aadhaar-login-form" action="javascript:void(0);" method="POST" onsubmit="event.preventDefault(); window.app && window.app.handleAadhaarSubmit(event); return false;">
+            
+            <!-- Citizen Name -->
+            <div class="form-group" style="margin-bottom: 10px;">
+              <label for="input-citizen-name">Citizen Full Name (as per Aadhaar)</label>
+              <input type="text" id="input-citizen-name" class="form-input" placeholder="Enter your full legal name" style="font-size: 0.85rem;" autocomplete="name">
+            </div>
+
+            <!-- 12-Digit Aadhaar Input -->
+            <div class="form-group" style="margin-bottom: 10px;">
+              <label for="input-aadhaar">12-Digit Aadhaar / VID Number</label>
+              <div style="position: relative;">
+                <input type="text" id="input-aadhaar" class="form-input" placeholder="XXXX XXXX XXXX" maxlength="14" style="font-family: monospace; font-size: 0.92rem; letter-spacing: 1px;" required oninput="window.app && window.app.formatAadhaarInput(this)">
+                <span id="aadhaar-valid-icon" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; display: none;">✅</span>
+              </div>
+            </div>
+
+            <!-- 10-Digit Mobile Number & OTP Trigger -->
+            <div class="form-group" style="margin-bottom: 10px;">
+              <label for="input-mobile">Registered Mobile Number (for OTP)</label>
+              <div style="display: flex; gap: 8px;">
+                <div style="display: flex; align-items: center; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; font-weight: 700; font-size: 0.85rem; color: #475569;">+91</div>
+                <input type="tel" id="input-mobile" class="form-input" placeholder="Enter 10-digit mobile" maxlength="10" style="flex: 1; font-family: monospace; font-size: 0.9rem;" required>
+                <button type="button" id="btn-send-otp" class="btn-secondary" onclick="window.app && window.app.handleSendOtp()" style="white-space: nowrap; padding: 0 14px; font-size: 0.8rem; background: var(--gov-blue); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Get OTP</button>
+              </div>
+              <div id="otp-status-badge" style="display: none; margin-top: 6px; font-size: 0.74rem; background: #dcfce7; color: #166534; padding: 8px 12px; border-radius: 6px; border: 1px solid #bbf7d0; line-height: 1.4;"></div>
+              </div>
+            </div>
+
+            <!-- 6-Digit OTP Input -->
+            <div class="form-group" style="margin-bottom: 12px;">
+              <label for="input-otp">6-Digit One Time Password (OTP)</label>
+              <input type="password" id="input-otp" class="form-input" placeholder="Enter 6-digit OTP" maxlength="6" style="font-family: monospace; font-size: 1rem; letter-spacing: 4px; text-align: center;" required onkeydown="if(event.key==='Enter'){event.preventDefault();window.app&&window.app.handleAadhaarSubmit(event);return false;}">
+            </div>
+
+            <!-- Aadhaar Card Soft Copy Submission -->
+            <div class="form-group" style="margin-bottom: 12px; background: #f8fafc; border: 1.5px dashed #94a3b8; border-radius: 8px; padding: 12px; text-align: center;">
+              <label style="display: block; font-size: 0.78rem; font-weight: 700; color: #1e293b; margin-bottom: 4px;">
+                📄 Upload Aadhaar Card Soft Copy (PDF / Image)
+              </label>
+              <div style="font-size: 0.7rem; color: #64748b; margin-bottom: 8px;">
+                Soft copy number will be validated against input digits
+              </div>
+              <input type="file" id="input-aadhaar-doc" accept=".pdf,image/png,image/jpeg,image/jpg" style="display: none;" onchange="window.app && window.app.handleAadhaarFileUpload(event)">
+              <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+                <button type="button" class="btn-card" onclick="document.getElementById('input-aadhaar-doc').click()" style="padding: 6px 14px; font-size: 0.76rem; background: #ffffff; border: 1px solid #0284c7; color: #0284c7; font-weight: 600; cursor: pointer; border-radius: 4px;">
+                  📁 Choose Aadhaar File (PDF / JPG)
+                </button>
+                <button type="button" class="btn-card" onclick="window.app && window.app.useThanujAadhaarSoftCopy()" style="padding: 6px 12px; font-size: 0.76rem; background: #f0fdf4; border: 1px solid #16a34a; color: #15803d; font-weight: 700; cursor: pointer; border-radius: 4px;">
+                  🆔 Use My Aadhaar (Penna Peruru Thanuj • 6022 8581 0827)
+                </button>
+              </div>
+              <div id="doc-upload-status" style="margin-top: 6px; font-size: 0.74rem; display: none;"></div>
+            </div>
+
+            <!-- Face Verification e-KYC Trigger -->
+            <div class="form-group" style="margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 10px 12px;">
+              <div>
+                <div style="font-size: 0.8rem; font-weight: 700; color: #1e3a8a;">👁️ Face Biometric e-KYC</div>
+                <div id="face-kyc-status-txt" style="font-size: 0.7rem; color: #3b82f6;">Required: Liveness Face Match via Camera</div>
+              </div>
+              <button type="button" id="btn-open-face-kyc" class="btn-card" onclick="window.app && window.app.openFaceKycModal()" style="background: #0284c7; color: #ffffff; border: none; padding: 6px 12px; font-size: 0.75rem; border-radius: 4px; font-weight: 600; cursor: pointer;">
+                Open Camera 📷
+              </button>
+            </div>
+
+            <button type="button" id="btn-submit-aadhaar" class="btn-primary" onclick="event.preventDefault(); window.app && window.app.handleAadhaarSubmit(event)" style="width: 100%; padding: 11px; font-weight: 700; font-size: 0.9rem;">
+              Verify Credentials &amp; Enter Portal
+            </button>
+
+            <!-- Demo Evaluator Link -->
+            <div style="margin-top: 14px; text-align: center; font-size: 0.74rem; color: #64748b;">
+              <span>Evaluator Demo: </span>
+              <a href="javascript:void(0);" onclick="window.app && window.app.loginDemoHarpreet()" style="color: #0284c7; font-weight: 600; text-decoration: underline;">
+                Load Sardar Harpreet Singh (Sample 3D Twin &amp; 3 Properties)
+              </a>
+            </div>
+          </form>
+        </div>
+
+        <!-- TAB 2: JANPARICHAY NSSO -->
+        <div id="auth-pane-janparichay" class="auth-pane" style="display: none;">
+          <form id="janparichay-login-form" action="javascript:void(0);" method="POST" onsubmit="event.preventDefault(); window.app && window.app.handleJanparichaySubmit(event); return false;">
+            <div class="form-group">
+              <label for="input-jp-username">JanParichay / MeriPehchaan Username</label>
+              <input type="text" id="input-jp-username" class="form-input" placeholder="username@gov.in" required>
+            </div>
+            <div class="form-group">
+              <label for="input-jp-password">Password</label>
+              <input type="password" id="input-jp-password" class="form-input" placeholder="Enter password" required>
+            </div>
+            <div class="form-group">
+              <label>Security Verification (Captcha)</label>
+              <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 6px;">
+                <div id="captcha-display" style="background: #0f172a; color: #38bdf8; font-family: monospace; font-size: 1.2rem; font-weight: 700; letter-spacing: 5px; padding: 8px 16px; border-radius: 6px; user-select: none; border: 1px dashed #38bdf8;">
+                  K 7 X 9 M
+                </div>
+                <button type="button" id="btn-refresh-captcha" onclick="window.app && window.app.refreshCaptcha()" style="background: none; border: 1px solid #cbd5e1; padding: 8px 10px; border-radius: 6px; cursor: pointer;" title="Refresh Captcha">🔄</button>
+              </div>
+              <input type="text" id="input-captcha" class="form-input" placeholder="Enter captcha text" required>
+            </div>
+            <button type="submit" class="btn-primary">Sign In with JanParichay NSSO</button>
+          </form>
+        </div>
+
+        <!-- TAB 3: DIGITAL TOKEN (DSC / e-Sign) -->
+        <div id="auth-pane-token" class="auth-pane" style="display: none;">
+          <form id="token-login-form" action="javascript:void(0);" method="POST" onsubmit="event.preventDefault(); window.app && window.app.handleTokenSubmit(event); return false;">
+            <div class="form-group">
+              <label for="select-token">Detected USB Cryptographic Token</label>
+              <select id="select-token" class="form-input">
+                <option value="harpreet">eMudhra PKI Token - Sardar Harpreet Singh (Citizen)</option>
+                <option value="officer">Punjab Govt Officer DSC - Shri Vikramjit Singh, PCS (Authority Head)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="input-token-pin">Token Security PIN</label>
+              <input type="password" id="input-token-pin" class="form-input" placeholder="Enter 6-digit USB Token PIN" value="123456" maxlength="8" required>
+            </div>
+            <button type="submit" class="btn-primary" style="background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);">
+              Authenticate via PKI Digital Signature
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- FACE VERIFICATION e-KYC MODAL (UIDAI BIOMETRIC LIVENESS) -->
+  <div id="modal-face-kyc" class="modal-backdrop" style="display: none;" onclick="if(event.target===this)window.app.closeFaceKycModal()">
+    <div class="modal-card" style="max-width: 480px; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
+      <div class="modal-header" style="background: #00274d; color: #ffffff; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 1.4rem;">👁️</span>
+          <div>
+            <h4 style="margin: 0; color: #ffffff; font-size: 1rem; font-weight: 700;">UIDAI Face e-KYC &bull; Biometric Liveness</h4>
+            <div style="font-size: 0.72rem; color: #93c5fd;">Autonomous Optical Facial Alignment &amp; Verification</div>
+          </div>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="window.app.closeFaceKycModal()" style="color: #ffffff; font-size: 1.5rem; background: none; border: none; cursor: pointer;">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 20px; text-align: center;">
+        <div class="face-scanner-container" style="position: relative; width: 300px; height: 300px; margin: 0 auto 16px auto; background: #0f172a; border-radius: 12px; overflow: hidden; border: 2px solid #0284c7; box-shadow: 0 0 20px rgba(2,132,199,0.3);">
+          <!-- Video Element for WebCam -->
+          <video id="kyc-video-stream" autoplay playsinline muted style="width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1);"></video>
+          <!-- Canvas for captured snapshot -->
+          <canvas id="kyc-canvas-capture" style="display: none; width: 100%; height: 100%; object-fit: cover;"></canvas>
+          <!-- Oval Face Alignment Guide Overlay -->
+          <div class="face-oval-guide" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 180px; height: 230px; border: 3px dashed #00f2fe; border-radius: 50%; pointer-events: none; box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.55);"></div>
+          <!-- Animated Radar Laser Sweep Beam -->
+          <div id="kyc-laser-beam" class="kyc-laser-line"></div>
+          <!-- Real-Time Face Alignment Status -->
+          <div id="kyc-scanner-hud" style="position: absolute; bottom: 12px; left: 12px; right: 12px; background: rgba(0,0,0,0.75); color: #38bdf8; padding: 6px 10px; border-radius: 6px; font-size: 0.72rem; font-family: monospace; font-weight: 600;">
+            🛰️ Centering face inside oval...
+          </div>
+        </div>
+
+        <!-- Biometric Checklist -->
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; text-align: left; font-size: 0.75rem;">
+          <div style="font-weight: 700; color: #1e293b; margin-bottom: 6px;">UIDAI Standards Checklist:</div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; color: #475569;">
+            <div id="kyc-check-face">✅ Face Detected (ISO 19794-5)</div>
+            <div id="kyc-check-lighting">✅ Ambient Lighting Optimal</div>
+            <div id="kyc-check-liveness">✅ Active Liveness Confirmed</div>
+            <div id="kyc-check-match">✅ Biometric Score &ge; 98.5%</div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div style="display: flex; gap: 10px; justify-content: center;">
+          <button type="button" id="btn-capture-face-kyc" class="btn-primary" onclick="window.app.captureFaceBiometrics()" style="flex: 1; padding: 10px; font-weight: 700; background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);">
+            📸 Capture &amp; Verify Face
+          </button>
+          <button type="button" class="btn-secondary" onclick="window.app.simulateFaceKyc()" style="padding: 10px 14px; font-size: 0.75rem;">
+            ⚡ Quick Pass (Demo)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="register-property-modal" class="modal-backdrop" onclick="if(event.target===this)window.app.closeRegisterModal()">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="font-size: 1.15rem; margin: 0; color: #0f172a; font-weight: 700;">Register New Land / Building (SVAMITVA 2.0)</h3>
+        <button type="button" id="btn-close-register-modal" class="btn-modal-close" onclick="window.app.closeRegisterModal()" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.82rem; color: #64748b; margin-bottom: 16px;">
+          Pin your parcel coordinates, declare building levels, and pay the verification challan via Bharatkosh. An autonomous cadastral LiDAR drone survey will be scheduled for execution within the <strong>next two working days</strong>.
+        </p>
+
+        <form id="property-register-form">
+          <!-- CADASTRAL MAP SPATIAL BOUNDARY SELECTOR & DRAWING TOOL -->
+          <div class="form-group" style="background: #f0fdf4; border: 1.5px solid #86efac; padding: 14px; border-radius: 8px; margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <label style="font-weight: 700; color: #166534; margin: 0; font-size: 0.88rem;">
+                🗺️ Land / Building Spatial Boundary (Map Selection):
+              </label>
+              <span id="reg-status-badge" style="font-size: 0.72rem; padding: 2px 8px; border-radius: 12px; background: #dbeafe; color: #1e40af; font-weight: 700;">
+                🏷️ 6-Point Cadastral Boundary
+              </span>
+            </div>
+
+            <p style="font-size: 0.76rem; color: #475569; margin-bottom: 10px; line-height: 1.35;">
+              Select an existing building footprint on the satellite map or draw custom multi-point boundaries (6 connecting dots) to compute precise cadastral land area:
+            </p>
+
+            <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+              <button type="button" id="btn-select-map-building" onclick="window.app.startSelectBuildingOnMap()" class="btn-card" style="flex: 1; padding: 9px 12px; font-size: 0.82rem; background: #0284c7; color: #fff; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 700; box-shadow: 0 2px 6px rgba(2,132,199,0.3);">
+                <span>📍</span> Select Building on Map
+              </button>
+              <button type="button" id="btn-draw-map-polygon" onclick="window.app.startDrawBoundaryPolygon()" class="btn-card" style="flex: 1; padding: 9px 12px; font-size: 0.82rem; background: #16a34a; color: #fff; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 700; box-shadow: 0 2px 6px rgba(22,163,74,0.3);">
+                <span>✏️</span> Draw Boundary (6 Dots)
+              </button>
+            </div>
+
+            <!-- Cadastral Polygon Geometry & Area Summary Card -->
+            <div id="reg-polygon-summary" style="background: #ffffff; border: 1px dashed #86efac; border-radius: 6px; padding: 10px; font-size: 0.8rem;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                <span style="color: #64748b;">Boundary Corners (Vertices):</span>
+                <strong id="reg-vertex-count" style="color: #0f172a; font-family: monospace;">6 points (Cadastral Boundary Polygon)</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                <span style="color: #64748b;">Calculated Land Area:</span>
+                <strong id="reg-area-display" style="color: #15803d; font-weight: 700;">385 sq.yd &bull; 3,465 sq.ft (321.9 m²)</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: #64748b;">GPS Centroid:</span>
+                <strong id="reg-centroid-display" style="color: #0369a1; font-family: monospace; font-size: 0.76rem;">31.61285° N, 74.86235° E</strong>
+              </div>
+            </div>
+
+            <input type="hidden" id="reg-coordinates-json" value='[[74.8621,31.6124],[74.8625,31.6123],[74.8628,31.6126],[74.8627,31.6129],[74.8623,31.6130],[74.8620,31.6127],[74.8621,31.6124]]'>
+            <input type="hidden" id="reg-area-sqft" value="3465">
+          </div>
+
+          <div class="form-group">
+            <label>Survey / Khasra Number</label>
+            <input type="text" id="reg-khasra-input" class="form-input" value="Khasra No. 429/1, Kot Atma Singh" required>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label for="reg-floors-select">Declared Floors / Vertical Levels</label>
+              <select id="reg-floors-select" class="form-input">
+                <option value="1">Ground Floor Only (1 Level)</option>
+                <option value="2" selected>Ground + 1 Floor (2 Levels)</option>
+                <option value="3">Ground + 2 Floors (3 Levels)</option>
+                <option value="4">Ground + 3 Floors (4 Levels)</option>
+                <option value="5">Ground + 4 Floors (5 Levels)</option>
+                <option value="6">Ground + 5+ Floors (High-Rise)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="reg-class-select">Land Classification / Building Type</label>
+              <select id="reg-class-select" class="form-input">
+                <option value="residential" selected>Abadi Deh (Residential)</option>
+                <option value="commercial">Commercial / Retail Showroom / Hotel</option>
+                <option value="industrial">Industrial / Manufacturing / Warehouse</option>
+                <option value="agricultural">Agricultural (Non-Abadi Farmland)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Subterranean Utility Basement Checkbox -->
+          <div class="form-group" style="background: #eff6ff; border: 1px solid #bfdbfe; padding: 10px 12px; border-radius: 6px; margin-bottom: 12px;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin: 0; font-size: 0.82rem; color: #1e3a8a; font-weight: 600;">
+              <input type="checkbox" id="reg-basement-checkbox" checked style="width: 16px; height: 16px; cursor: pointer;">
+              <span>Include Subterranean Foundation &amp; Utility Conduits (-30ft / -9.14m &bull; GPR Radar Scan)</span>
+            </label>
+            <div style="font-size: 0.72rem; color: #475569; margin-left: 24px; margin-top: 2px;">
+              Enables Ground Penetrating Radar (GPR) scan for 3D mapping of power cables, water lines, gas pipes, and sewers.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Upload Front Elevation Photo (For Drone Visual SLAM Matching)</label>
+            <input type="file" class="form-input" accept="image/*">
+            <div style="font-size: 0.72rem; color: #64748b; margin-top: 4px;">Drone uses AI feature matching to verify building identity before LiDAR scan.</div>
+          </div>
+
+          <!-- Dynamic Challan Pricing Card (Recalculates live based on Floors, Classification, Area & Subterranean Scan) -->
+          <div class="form-group">
+            <label style="display: flex; justify-content: space-between; align-items: center;">
+              <span>Registration &amp; Drone LiDAR Survey Challan Fee</span>
+              <span style="font-size: 0.72rem; color: #166534; font-weight: 600;">Live Tariff Assessment (MCA / DILRMP)</span>
+            </label>
+            
+            <div id="reg-challan-fee-display" style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 8px; padding: 12px; margin-top: 4px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span id="reg-fee-amount-text" style="font-size: 1.25rem; font-weight: 800; color: #166534;">₹1,250.00 &bull; Bharatkosh Gateway</span>
+                <span id="reg-fee-breakdown-text" style="font-size: 0.74rem; background: #bbf7d0; color: #15803d; padding: 3px 10px; border-radius: 12px; font-weight: 700;">2 Levels (G+1) + Basement</span>
+              </div>
+              
+              <!-- Live Itemized Breakdown -->
+              <div id="reg-challan-itemized-breakdown" style="font-size: 0.76rem; color: #334155; border-top: 1px dashed #86efac; padding-top: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                <div>Autonomous Drone LiDAR Scan: <strong id="fee-breakdown-base">₹750</strong></div>
+                <div>Vertical Levels SLAM (2 Floors): <strong id="fee-breakdown-floors">₹350</strong></div>
+                <div>Category (Residential): <strong id="fee-breakdown-class">₹0</strong></div>
+                <div>Subterranean GPR Utility Scan: <strong id="fee-breakdown-basement">₹400</strong></div>
+              </div>
+            </div>
+
+            <input type="hidden" id="reg-challan-amount-input" value="1500">
+          </div>
+
+          <button type="submit" id="btn-submit-registration" class="btn-primary" style="background: linear-gradient(180deg, #16a34a 0%, #15803d 100%); font-size: 0.95rem; font-weight: 700; padding: 12px;">
+            💳 Pay ₹1,500.00 Challan &amp; Schedule Drone Survey (Bharatkosh)
+          </button>
+        </form>
+
+        <!-- Official Bharatkosh Challan Payment Receipt Card -->
+        <div id="challan-official-receipt" class="challan-receipt-card" style="display: none;">
+          <div class="receipt-gov-banner">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 1.8rem;">🏛️</span>
+              <div>
+                <div style="font-weight: 800; font-size: 0.95rem; color: #00274d;">GOVERNMENT OF PUNJAB</div>
+                <div style="font-size: 0.72rem; color: #475569;">DEPARTMENT OF REVENUE &amp; LAND RECORDS (DILRMP/SVAMITVA 2.0)</div>
+              </div>
+            </div>
+            <span class="receipt-paid-stamp">PAID &bull; BHARATKOSH</span>
+          </div>
+
+          <div class="receipt-title-bar">
+            <span>OFFICIAL E-CHALLAN PAYMENT ACKNOWLEDGMENT RECEIPT</span>
+            <span id="receipt-ref-no" style="font-family: monospace; color: #004080; font-weight: 700;">REF #PB-BHRTK-2026-8839120</span>
+          </div>
+
+          <div class="receipt-details-table">
+            <div class="receipt-row">
+              <span class="lbl">Challan / GRN No:</span>
+              <strong id="receipt-grn-val" class="val">CHL-MCA-ASR-2026-99214</strong>
+            </div>
+            <div class="receipt-row">
+              <span class="lbl">Payment Date &amp; Time:</span>
+              <strong id="receipt-date-val" class="val">10-Sep-2026 10:35 PM IST</strong>
+            </div>
+            <div class="receipt-row">
+              <span class="lbl">Registered Payer:</span>
+              <strong class="val">Sardar Harpreet Singh (Aadhaar: XXXX-XXXX-8921)</strong>
+            </div>
+            <div class="receipt-row">
+              <span class="lbl">Property Khasra / Survey No:</span>
+              <strong id="receipt-khasra-val" class="val">Khasra No. 429/1, Kot Atma Singh, Amritsar-I</strong>
+            </div>
+            <div class="receipt-row">
+              <span class="lbl">14-Digit Provisional ULPIN:</span>
+              <strong id="receipt-ulpin-val" class="val" style="color: #0284c7; font-family: monospace;">PB020011019941</strong>
+            </div>
+            <div class="receipt-row">
+              <span class="lbl">Purpose / Head of Account:</span>
+              <strong class="val">0029 - Land Revenue &amp; 3D Autonomous Drone LiDAR Cadastral Survey</strong>
+            </div>
+            <div class="receipt-row">
+              <span class="lbl">Amount Paid:</span>
+              <strong id="receipt-amount-val" class="val" style="color: #166534; font-size: 1.1rem;">₹1,250.00 (Bharatkosh Gateway)</strong>
+            </div>
+            <div class="receipt-row" style="background: #f0fdf4; border-left: 3px solid #22c55e;">
+              <span class="lbl">Drone Survey Schedule:</span>
+              <strong class="val" style="color: #15803d; font-weight: 700;">🗓️ SCHEDULED IN NEXT TWO WORKING DAYS</strong>
+            </div>
+          </div>
+
+          <div class="receipt-footer-note">
+            ℹ️ <strong>Official Notice:</strong> Payment verified via SBI e-Pay Bharatkosh Gateway. Autonomous drone survey mission has been queued at the Amritsar Municipal Survey Depot. The cadastral LiDAR flight will take place within the <strong>next two working days</strong>. Live telemetry and 3D point-cloud reconstruction will be mapped upon flight completion.
+          </div>
+
+          <div class="receipt-action-buttons">
+            <button type="button" class="btn-receipt-print" onclick="window.print()">🖨️ Print Receipt</button>
+            <button type="button" class="btn-receipt-download" onclick="window.app.downloadChallanPDF()">📥 Download PDF</button>
+            <button type="button" class="btn-receipt-close" onclick="window.app.closeRegisterModal()">Done / Close</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  
+  <!-- OFFICIAL PUNJAB BHUNAKSHA & JAMABANDI RECORD OF RIGHTS (FARD) MODAL -->
+  <div id="modal-bhunaksha-fard" class="modal-backdrop" style="display: none;" onclick="if(event.target===this)window.app.closeFardModal()">
+    <div class="modal-card fard-modal-card" style="max-width: 840px; background: #ffffff;">
+      <div class="modal-header" style="background: #00274d; color: #ffffff; display: flex; justify-content: space-between; align-items: center; padding: 14px 20px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 1.6rem;">🏛️</span>
+          <div>
+            <h3 style="margin: 0; font-size: 1.05rem; color: #ffffff;">Government of Punjab &bull; Revenue Department</h3>
+            <div style="font-size: 0.72rem; color: #93c5fd;">Official BhuNaksha &amp; Jamabandi Cadastral Extract (ਨਕਲ ਜਮਾਂਬੰਦੀ)</div>
+          </div>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="window.app.closeFardModal()" aria-label="Close modal" style="color: #ffffff; font-size: 1.5rem; background: none; border: none; cursor: pointer;">&times;</button>
+      </div>
+
+      <div class="modal-body" style="padding: 24px; position: relative; background: #fafbfc;">
+        <!-- Official Government Watermark -->
+        <div class="fard-watermark">PUNJAB REVENUE &bull; DILRMP</div>
+
+        <!-- Official Header -->
+        <div class="fard-doc-header">
+          <div style="text-align: center; border-bottom: 2px solid #00274d; padding-bottom: 12px; margin-bottom: 16px;">
+            <div style="font-size: 0.85rem; font-weight: 700; color: #00274d; text-transform: uppercase; letter-spacing: 0.04em;">
+              ਡਾਇਰੈਕਟੋਰੇਟ ਆਫ਼ ਲੈਂਡ ਰਿਕਾਰਡਜ਼, ਪੰਜਾਬ &bull; Directorate of Land Records, Punjab
+            </div>
+            <div style="font-size: 1.25rem; font-weight: 800; color: #1e3a8a; margin: 4px 0;">
+              ਫਰਦ ਜਮਾਂਬੰਦੀ &bull; RECORD OF RIGHTS (RoR)
+            </div>
+            <div style="font-size: 0.75rem; color: #475569;">
+              National Informatics Centre (NIC) &bull; DILRMP / SVAMITVA 2.0 &bull; Verified via jamabandi.punjab.gov.in
+            </div>
+          </div>
+
+          <!-- Jurisdictional Metadata Grid -->
+          <div class="fard-meta-grid">
+            <div><span>ਜ਼ਿਲ੍ਹਾ / District:</span> <strong id="fard-district">Amritsar (02)</strong></div>
+            <div><span>ਤਹਿਸੀਲ / Tehsil:</span> <strong id="fard-tehsil">Amritsar-I (Urban)</strong></div>
+            <div><span>ਪਿੰਡ / Village &amp; Hadbast:</span> <strong id="fard-village">Kot Atma Singh (Hadbast No. 101)</strong></div>
+            <div><span>ਸਾਲ ਜਮਾਂਬੰਦੀ / Year:</span> <strong id="fard-year">2023-2024</strong></div>
+            <div><span>14-Digit Bhu-Aadhaar (ULPIN):</span> <strong id="fard-ulpin" style="color: #0284c7; font-family: monospace;">BCN501B1NA2CH0</strong></div>
+            <div><span>ਸ਼ੀਟ ਨੰ: / Sheet No:</span> <strong>Block-1A (Cadastre Urban)</strong></div>
+          </div>
+        </div>
+
+        <!-- 8-Column Official Punjab Revenue Table -->
+        <div class="fard-table-container" style="overflow-x: auto; margin-top: 14px;">
+          <table class="fard-table">
+            <thead>
+              <tr>
+                <th>ਖੇਵਟ ਨੰ:<br><span style="font-size: 0.68rem; font-weight: normal;">Khewat No.</span></th>
+                <th>ਖਤੌਨੀ ਨੰ:<br><span style="font-size: 0.68rem; font-weight: normal;">Khatouni No.</span></th>
+                <th>ਮਾਲਕ ਦਾ ਨਾਮ ਤੇ ਵੇਰਵਾ<br><span style="font-size: 0.68rem; font-weight: normal;">Owner Name &amp; Share</span></th>
+                <th>ਕਾਸ਼ਤਕਾਰ<br><span style="font-size: 0.68rem; font-weight: normal;">Cultivator / Occupant</span></th>
+                <th>ਖਸਰਾ ਨੰ:<br><span style="font-size: 0.68rem; font-weight: normal;">Khasra No.</span></th>
+                <th>ਰਕਬਾ<br><span style="font-size: 0.68rem; font-weight: normal;">Area (K-M)</span></th>
+                <th>ਕਿਸਮ ਜ਼ਮੀਨ<br><span style="font-size: 0.68rem; font-weight: normal;">Classification</span></th>
+                <th>Bhu-Aadhaar<br><span style="font-size: 0.68rem; font-weight: normal;">14-Digit ULPIN</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td id="fard-tbl-khewat" style="font-weight: 700;">88</td>
+                <td id="fard-tbl-khatouni" style="font-weight: 700;">142</td>
+                <td id="fard-tbl-owner" style="font-weight: 600;">Sardar Harpreet Singh<br><span style="font-size: 0.7rem; color: #64748b;">ਖ਼ੁਦਕਾਸ਼ਤ (Sole Owner 100%)</span></td>
+                <td>ਮਕਬੂਜ਼ਾ ਮਾਲਕ<br><span style="font-size: 0.7rem; color: #64748b;">(Self Occupied)</span></td>
+                <td id="fard-tbl-khasra" style="font-weight: 800; color: #0284c7; font-family: monospace;">412/1</td>
+                <td id="fard-tbl-area" style="font-weight: 700;">0-7<br><span style="font-size: 0.7rem; color: #64748b;">(220 sq.yd)</span></td>
+                <td id="fard-tbl-type">ਗ਼ੈਰ ਮੁਮਕਿਨ ਆਬਾਦੀ<br><span style="font-size: 0.68rem; color: #64748b;">(Gair Mumkin Abadi)</span></td>
+                <td id="fard-tbl-ulpin" style="font-family: monospace; font-weight: 700; color: #0369a1;">BCN501B1NA2CH0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Urban Abadi / SVAMITVA Legal Cadastre Note -->
+        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 10px 14px; margin-top: 14px; font-size: 0.75rem; color: #14532d; line-height: 1.5;">
+          <div style="font-weight: 700; margin-bottom: 3px; display: flex; align-items: center; gap: 6px;">
+            <span>ℹ️</span> <span>Legal Cadastral Framework: Urban Abadi (Lal Lakir) &bull; SVAMITVA Scheme</span>
+          </div>
+          <div>
+            Traditional 1887 Punjab Jamabandis only catalogued rural agricultural land; urban habitations inside the <em>Lal Lakir</em> (Abadi Deh) lacked individual khasra deeds. 
+            Under the Government of India <strong>SVAMITVA Scheme</strong> &amp; Punjab <strong>Mission Lal Lakir</strong>, this 3D Cadastral Digital Twin assigns the 14-character statutory Bhu-Aadhaar ULPIN (<code>BCN501B1NA2CH0</code>) to establish formal property titles and 3D Sub-ULPIN strata ownership.
+          </div>
+        </div>
+
+        <!-- Statutory Notice & Verification Link -->
+        <div class="fard-footer-box">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div>
+              <div style="font-size: 0.78rem; font-weight: 700; color: #166534;">
+                ✅ NIC BhuNaksha &amp; Jamabandi Certified Record
+              </div>
+              <div style="font-size: 0.72rem; color: #475569; margin-top: 2px;">
+                Verified under Punjab Land Records Society (PLRS) &bull; Digitally Signed by Halqa Patwari &amp; Kanungo
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <a href="https://jamabandi.punjab.gov.in/" target="_blank" class="fard-verify-link">
+                🌐 Verify on jamabandi.punjab.gov.in ↗
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Actions -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 18px; padding-top: 14px; border-top: 1px solid #e2e8f0;">
+          <button type="button" class="btn-card" onclick="window.app.copyBhuNakshaDetails(window.app.activeFardUlpin)" style="background: #0284c7; color: #ffffff; border: none; padding: 8px 16px; font-weight: 600; cursor: pointer; border-radius: 5px;">
+            📋 Copy Record for BhuNaksha
+          </button>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" class="btn-card" onclick="window.print()" style="padding: 8px 14px; cursor: pointer; border-radius: 5px;">🖨️ Print Fard</button>
+            <button type="button" class="btn-card" onclick="window.app.closeFardModal()" style="padding: 8px 14px; cursor: pointer; border-radius: 5px;">Close</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- BHARATKOSH DYNAMIC UPI PAYMENT & QR CODE MODAL -->
+  <div id="modal-upi-payment" class="modal-backdrop" style="display: none;" onclick="if(event.target===this)window.app.closeUpiPaymentModal()">
+    <div class="modal-card upi-payment-card" style="max-width: 480px; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.45); border: 1.5px solid #003366;">
+      
+      <!-- Modal Header -->
+      <div class="upi-header" style="background: linear-gradient(135deg, #00274d 0%, #004080 100%); color: #ffffff; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 1.6rem;">🏛️</span>
+          <div>
+            <div style="font-weight: 800; font-size: 0.95rem; letter-spacing: 0.5px; color: #ffffff;">BHARATKOSH &bull; NPCI UPI GATEWAY</div>
+            <div style="font-size: 0.72rem; color: #93c5fd;">Government of India Official E-Challan &bull; SVAMITVA 2.0</div>
+          </div>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="window.app.closeUpiPaymentModal()" aria-label="Close Payment Modal" style="color: #ffffff; font-size: 1.5rem; background: none; border: none; cursor: pointer;">&times;</button>
+      </div>
+
+      <!-- State 1: Generating Dynamic QR Loader Screen -->
+      <div id="upi-generating-state" style="padding: 44px 24px; text-align: center; display: none;">
+        <div class="upi-spinner"></div>
+        <h3 style="font-size: 1.15rem; color: #0f172a; margin-bottom: 8px; font-weight: 800;">Generating Bharatkosh Dynamic UPI QR...</h3>
+        <p style="font-size: 0.82rem; color: #64748b; margin-bottom: 18px;">Initiating secure NPCI settlement session with Treasury Head 0029 &bull; Land Revenue &amp; Drone LiDAR</p>
+        <div style="display: inline-flex; align-items: center; gap: 8px; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 6px 14px; border-radius: 20px; font-size: 0.74rem; color: #166534; font-weight: 600;">
+          <span class="pulse-radar-dot"></span>
+          <span>Secured by MeitY / CERT-In 256-bit WAF Encryption</span>
+        </div>
+      </div>
+
+      <!-- State 2: Active QR Code & Fixed Amount Screen -->
+      <div id="upi-display-state" style="padding: 22px 24px;">
+        
+        <!-- Fixed Amount Banner -->
+        <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1.5px solid #86efac; border-radius: 12px; padding: 12px 16px; text-align: center; margin-bottom: 16px;">
+          <div style="font-size: 0.72rem; font-weight: 700; color: #15803d; text-transform: uppercase; letter-spacing: 0.6px;">Fixed Statutory Challan Amount</div>
+          <div id="upi-modal-amount-display" style="font-size: 1.95rem; font-weight: 900; color: #14532d; margin: 2px 0;">₹1,250.00</div>
+          <div id="upi-modal-purpose-display" style="font-size: 0.75rem; color: #166534; font-weight: 600;">Autonomous Drone LiDAR Cadastral Survey &bull; 2 Levels + Basement</div>
+        </div>
+
+        <!-- Official QR Code Image Container -->
+        <div style="text-align: center; background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 14px; padding: 14px; position: relative; margin-bottom: 14px;">
+          <div style="display: inline-block; padding: 8px; background: #ffffff; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.08);">
+            <img id="upi-qr-image" src="/data/upi_payment_qr.png" alt="Bharatkosh UPI QR Code" style="width: 210px; height: 210px; object-fit: contain; display: block; border-radius: 4px;">
+          </div>
+          
+          <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; font-size: 0.76rem; color: #0284c7; font-weight: 600;">
+            <span class="pulse-radar-dot"></span>
+            <span>Scan with any UPI Payment App on your phone</span>
+          </div>
+        </div>
+
+        <!-- Supported UPI Apps Badges -->
+        <div style="text-align: center; margin-bottom: 14px;">
+          <div style="font-size: 0.7rem; color: #64748b; margin-bottom: 6px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Compatible UPI Payment Apps:</div>
+          <div style="display: flex; justify-content: center; gap: 6px; flex-wrap: wrap;">
+            <span style="background: #e0f2fe; color: #0369a1; padding: 3px 8px; border-radius: 5px; font-size: 0.72rem; font-weight: 700;">Google Pay</span>
+            <span style="background: #ede9fe; color: #6d28d9; padding: 3px 8px; border-radius: 5px; font-size: 0.72rem; font-weight: 700;">PhonePe</span>
+            <span style="background: #e0f2fe; color: #0284c7; padding: 3px 8px; border-radius: 5px; font-size: 0.72rem; font-weight: 700;">Paytm</span>
+            <span style="background: #ffedd5; color: #c2410c; padding: 3px 8px; border-radius: 5px; font-size: 0.72rem; font-weight: 700;">BHIM UPI</span>
+            <span style="background: #f1f5f9; color: #334155; padding: 3px 8px; border-radius: 5px; font-size: 0.72rem; font-weight: 700;">Cred / Bank UPI</span>
+          </div>
+        </div>
+
+        <!-- Transaction Meta Grid -->
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 12px; font-size: 0.74rem; color: #475569; margin-bottom: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+          <div>Payee: <strong style="color: #0f172a;">Penna Peruru Thanuj</strong></div>
+          <div>UPI ID: <strong style="color: #0284c7;">penna.p@ptyes</strong></div>
+          <div>Challan Ref: <strong id="upi-modal-grn-text" style="color: #0369a1; font-family: monospace;">CHL-MCA-2026-89214</strong></div>
+          <div>Session Valid: <strong id="upi-countdown-timer" style="color: #dc2626;">09:59</strong></div>
+        </div>
+
+        <!-- Interactive Actions -->
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <button type="button" id="btn-simulate-upi-scan" class="btn-primary" onclick="window.app.simulateUpiAppScan()" style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); padding: 12px; font-size: 0.92rem; font-weight: 700; border-radius: 8px; border: none; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(22, 163, 74, 0.35);">
+            <span>📱</span>
+            <span>Simulate Instant App Scan &amp; Pay (Approve <span id="btn-upi-pay-amount">₹1,250.00</span>)</span>
+          </button>
+          <button type="button" id="btn-verify-upi-utr" class="btn-card" onclick="window.app.confirmUpiPayment()" style="background: #ffffff; border: 1.5px solid #0284c7; color: #0284c7; padding: 9px; font-size: 0.82rem; font-weight: 700; border-radius: 8px; cursor: pointer;">
+            ✅ I Have Scanned &amp; Paid on Mobile (Verify UTR)
+          </button>
+        </div>
+
+      </div>
+
+      <!-- State 3: Payment Verified Success State -->
+      <div id="upi-success-state" style="padding: 36px 24px; text-align: center; display: none;">
+        <div style="font-size: 3.2rem; margin-bottom: 10px; line-height: 1;">✅</div>
+        <h3 style="font-size: 1.25rem; color: #166534; margin-bottom: 6px; font-weight: 800;">Challan Payment Confirmed!</h3>
+        <div style="font-size: 0.84rem; color: #334155; margin-bottom: 10px;">
+          Received <strong id="upi-success-amount">₹1,250.00</strong> via Bharatkosh UPI
+        </div>
+        <div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 8px 12px; font-size: 0.74rem; color: #15803d; font-family: monospace; margin-bottom: 16px;">
+          NPCI UTR: <span id="upi-success-utr">625109841289</span> &bull; Status: SETTLED_TREASURY_0029
+        </div>
+        <div style="font-size: 0.78rem; color: #64748b;">
+          Issuing official Bharatkosh e-Challan receipt &amp; queueing autonomous cadastral drone survey...
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FLOATING AI CADASTRAL LEGAL ASSISTANT FAB -->
+  <button id="btn-open-ai-assistant" class="ai-assistant-fab" title="Open AI Cadastral Legal Assistant" aria-label="Open AI Cadastral Assistant">
+    <span class="ai-fab-icon">🤖</span>
+    <span class="ai-fab-text">AI Cadastral Assistant</span>
+    <span class="ai-fab-badge">24/7 RAG</span>
+  </button>
+
+  <!-- AI CADASTRAL LEGAL ASSISTANT DRAWER -->
+  <div id="ai-assistant-drawer" class="ai-assistant-panel" style="display: none;">
+    <div class="ai-drawer-header">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 1.5rem;">🤖</span>
+        <div>
+          <div style="font-weight: 700; font-size: 0.92rem; color: #fff;">Bhu-Samvaad AI Legal Assistant</div>
+          <div style="font-size: 0.7rem; color: #7dd3fc;">NVIDIA Nemotron 550B &bull; SVAMITVA / DILRMP Statutory RAG</div>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <button id="btn-close-ai-assistant" class="ai-close-btn" aria-label="Close Assistant">&times;</button>
+      </div>
+    </div>
+
+    <div class="ai-quick-prompts">
+      <button class="ai-prompt-pill" data-prompt="What are the rules for unauthorized vertical storeys under Section 187?">Section 187 Demolition</button>
+      <button class="ai-prompt-pill" data-prompt="Explain Jamabandi RoR presumption of truth under Punjab Land Revenue Act Sec 31.">Jamabandi Sec 31</button>
+      <button class="ai-prompt-pill" data-prompt="How does ISO 19152 3D Cadastre assign Sub-ULPINs to each floor?">3D Sub-ULPIN</button>
+      <button class="ai-prompt-pill" data-prompt="How to schedule autonomous drone LiDAR survey for my property?">Drone Survey Fee</button>
+    </div>
+
+    <div id="ai-chat-messages" class="ai-chat-body">
+      <div class="ai-message bot">
+        <strong>🇮🇳 Bhu-Samvaad AI Legal Assistant:</strong>
+        <div class="msg-content" style="margin-top: 4px;">
+          Sat Sri Akal / Namaste! I am the official AI Cadastral Legal Assistant for the <strong>BHAVANINFO 3D Digital Twin Portal</strong>.
+          <br><br>
+          Ask me about:
+          <br>&bull; Section 187 Demolition / Compounding rules under Municipal Corporation Act
+          <br>&bull; Punjab Land Revenue Act 1887 &amp; Jamabandi Record of Rights (RoR)
+          <br>&bull; 14-digit Bhu-Aadhaar ULPIN assignment &amp; 3D Sub-ULPIN strata titles
+          <br>&bull; Drone LiDAR survey fees, Bharatkosh UPI challan, &amp; registration.
+        </div>
+      </div>
+    </div>
+
+    <form id="ai-chat-form" class="ai-chat-footer">
+      <input type="text" id="ai-chat-input" placeholder="Ask legal cadastral or building bye-law question..." autocomplete="off">
+      <button type="submit" class="btn-primary" style="padding: 6px 14px; font-size: 0.8rem; background: #0284c7; border: none; border-radius: 6px; color: white; cursor: pointer; font-weight: 600;">Send</button>
+    </form>
+  </div>
+
+  <!-- Vendor Libraries: MapLibre GL 3D Map Engine & Three.js BIM Engine -->
+  <script src="vendor/maplibre-gl.js"></script>
+  <script src="vendor/three.min.js"></script>
+  <script src="vendor/OrbitControls.js"></script>
+
+  <!-- Main Application Script (ES Module) -->
+  <script type="module" src="src/app.js?v=v20260911_v26_multipage_pdf_print_fixed"></script>
+</body>
+</html>
